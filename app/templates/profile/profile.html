@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}{{ current_user.username }} — Astroshare{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12">
+
+    <!-- Шапка профиля -->
+    <div class="card rounded-2xl p-8 mb-6">
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+
+            <!-- Аватар -->
+            <div class="flex-shrink-0">
+                {% if user.avatar_filename %}
+                    <img src="{{ url_for('main.uploaded_file', filename=user.avatar_filename) }}"
+                         alt="{{ user.username }}"
+                         class="w-24 h-24 rounded-full object-cover"
+                         style="border: 2px solid rgba(79,142,247,0.4);">
+                {% else %}
+                    <div class="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold"
+                         style="background: linear-gradient(135deg, #1e1e5c, #141442);
+                                border: 2px solid rgba(79,142,247,0.4); color: #4f8ef7;">
+                        {{ user.username[0].upper() }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Основная информация -->
+            <div class="flex-1 text-center sm:text-left">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
+                    <h1 class="text-2xl font-bold text-white">{{ user.username }}</h1>
+                    {% if user.is_admin %}
+                        <span class="text-xs px-2 py-0.5 rounded-full font-medium"
+                              style="background: rgba(159,122,234,0.2); color: #c4b5fd;">
+                            Admin
+                        </span>
+                    {% endif %}
+                </div>
+
+                {% if user.bio %}
+                    <p class="text-sm mb-3" style="color: #9999cc;">{{ user.bio }}</p>
+                {% endif %}
+
+                <div class="flex flex-wrap gap-4 text-sm" style="color: #9999cc;">
+                    {% if user.location %}
+                        <span>📍 {{ user.location }}</span>
+                    {% endif %}
+                    <span>{{ _('profile_member_since') }} {{ user.created_at.strftime('%B %Y') }}</span>
+                </div>
+
+                {% if user.website or user.twitter or user.instagram %}
+                <div class="flex gap-3 mt-3">
+                    {% if user.website %}
+                        <a href="{{ user.website }}" target="_blank" rel="noopener"
+                           class="text-xs text-blue-400 hover:text-blue-300">
+                            {{ _('profile_website') }}
+                        </a>
+                    {% endif %}
+                    {% if user.twitter %}
+                        <a href="https://twitter.com/{{ user.twitter }}" target="_blank" rel="noopener"
+                           class="text-xs text-blue-400 hover:text-blue-300">Twitter</a>
+                    {% endif %}
+                    {% if user.instagram %}
+                        <a href="https://instagram.com/{{ user.instagram }}" target="_blank" rel="noopener"
+                           class="text-xs text-blue-400 hover:text-blue-300">Instagram</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Кнопки -->
+            <div class="flex-shrink-0 flex flex-col gap-2">
+                <a href="{{ url_for('profile.edit_profile') }}"
+                   class="btn-secondary text-sm px-4 py-2 rounded-lg font-medium text-center">
+                    {{ _('profile_edit') }}
+                </a>
+                <a href="{{ url_for('profile.friends_list') }}"
+                   class="btn-secondary text-sm px-4 py-2 rounded-lg font-medium text-center relative">
+                    {{ _('friends_title') }}
+                    {% if pending_in_count > 0 %}
+                    <span class="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs
+                                 flex items-center justify-center font-bold"
+                          style="background:#9f7aea;color:#fff;">
+                        {{ pending_in_count }}
+                    </span>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика (значения переданы из routes.py, БД не вызывается из шаблона) -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div class="card rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-blue-400">{{ photos_count }}</div>
+            <div class="text-xs mt-1" style="color: #9999cc;">{{ _('profile_stat_photos') }}</div>
+        </div>
+        <div class="card rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold" style="color: #9f7aea;">{{ total_likes }}</div>
+            <div class="text-xs mt-1" style="color: #9999cc;">{{ _('profile_stat_likes') }}</div>
+        </div>
+        <div class="card rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold" style="color: #22d3ee;">{{ comments_count }}</div>
+            <div class="text-xs mt-1" style="color: #9999cc;">{{ _('profile_stat_comments') }}</div>
+        </div>
+        <a href="{{ url_for('profile.friends_list') }}"
+           class="card rounded-xl p-4 text-center hover:opacity-80 transition-opacity">
+            <div class="text-2xl font-bold" style="color: #c4b5fd;">{{ friends_count }}</div>
+            <div class="text-xs mt-1" style="color: #9999cc;">{{ _('profile_stat_friends') }}</div>
+        </a>
+    </div>
+
+    <!-- Баннер: входящие запросы в друзья -->
+    {% if pending_in_count > 0 %}
+    <div class="rounded-xl p-4 mb-6 flex items-center justify-between text-sm"
+         style="background: rgba(159,122,234,0.1); border: 1px solid rgba(159,122,234,0.35);
+                color: #c4b5fd;">
+        <span>{{ _('friends_pending_title') }}: <strong>{{ pending_in_count }}</strong></span>
+        <a href="{{ url_for('profile.friends_list') }}"
+           class="text-xs px-3 py-1 rounded-lg font-medium"
+           style="background:rgba(159,122,234,0.25);">
+            {{ _('friend_accept') }} →
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Телескопы -->
+    {% if user.telescopes %}
+    <div class="card rounded-xl p-5 mb-6">
+        <h2 class="text-sm font-semibold text-white mb-3">{{ _('profile_telescopes') }}</h2>
+        <div class="flex flex-wrap gap-2">
+            {% for telescope in user.telescopes.split(',') %}
+                {% if telescope.strip() %}
+                <span class="text-xs px-3 py-1 rounded-full"
+                      style="background: rgba(79,142,247,0.1); color: #93c5fd;
+                             border: 1px solid rgba(79,142,247,0.2);">
+                    {{ telescope.strip() }}
+                </span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Email не подтверждён -->
+    {% if not user.email_confirmed %}
+    <div class="rounded-xl p-4 mb-6 text-sm"
+         style="background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.3);
+                color: #fde047;">
+        {{ _('profile_email_not_confirmed') }}
+    </div>
+    {% endif %}
+
+    <!-- Снимки (переданы из routes.py) -->
+    {% if user_photos %}
+    <h2 class="text-sm font-semibold text-white mb-3">{{ _('profile_stat_photos') }}</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+        {% for photo in user_photos %}
+        <a href="{{ url_for('photos.photo_detail', photo_id=photo.id) }}"
+           class="card rounded-xl overflow-hidden group block">
+            <div class="aspect-square overflow-hidden" style="background:#03030f;">
+                {% if photo.thumbnail_filename %}
+                    <img src="{{ url_for('main.uploaded_file', filename=photo.thumbnail_filename) }}"
+                         alt="{{ photo.title }}"
+                         class="w-full h-full object-cover transition-transform duration-300
+                                group-hover:scale-105">
+                {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-3xl"
+                         style="color:rgba(79,142,247,0.3);">&#9733;</div>
+                {% endif %}
+            </div>
+            <div class="p-2">
+                <p class="text-xs font-medium text-white truncate">{{ photo.title }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    <div class="text-center mb-8">
+        <a href="{{ url_for('photos.my_photos') }}"
+           class="btn-secondary text-sm px-5 py-2 rounded-lg font-medium">
+            {{ _('profile_all_photos') }}
+        </a>
+    </div>
+    {% else %}
+    <div class="card rounded-xl p-6 text-center mb-8" style="color: #9999cc;">
+        <p class="text-sm">{{ _('profile_no_photos_yet') }}</p>
+        <a href="{{ url_for('photos.upload') }}"
+           class="btn-primary text-sm px-5 py-2 rounded-lg font-medium mt-3 inline-block">
+            {{ _('profile_upload_first') }}
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

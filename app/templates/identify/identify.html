@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('identify_title') }} — Astroshare{% endblock %}
+
+{% block extra_head %}
+{% if result %}
+<link rel="stylesheet" href="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.min.css">
+<script src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js" charset="utf-8"></script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-10">
+
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-white mb-1">{{ _('identify_title') }}</h1>
+        <p class="text-sm" style="color:#9999cc;">{{ _('identify_subtitle') }}</p>
+    </div>
+
+    <!-- Поиск -->
+    <form method="GET" action="{{ url_for('identify.identify_view') }}"
+          class="flex gap-3 mb-8">
+        <input type="text"
+               name="q"
+               value="{{ query }}"
+               placeholder="{{ _('identify_placeholder') }}"
+               autofocus
+               class="flex-1 rounded-xl px-4 py-3 text-sm"
+               style="background:rgba(13,13,46,0.9);
+                      border:1px solid rgba(79,142,247,0.3);
+                      color:#e8e8ff;outline:none;"
+               onfocus="this.style.borderColor='rgba(79,142,247,0.6)'"
+               onblur="this.style.borderColor='rgba(79,142,247,0.3)'">
+        <button type="submit"
+                class="btn-primary px-6 py-3 rounded-xl font-semibold text-sm">
+            {{ _('identify_search') }}
+        </button>
+    </form>
+
+    <!-- Примеры (показываем только если нет запроса) -->
+    {% if not query %}
+    <div class="card rounded-2xl p-6 mb-6">
+        <h2 class="text-sm font-semibold text-white mb-4">{{ _('identify_examples_title') }}</h2>
+        <div class="flex flex-wrap gap-2">
+            {% for ex in ['M31', 'M42', 'NGC 1952', 'Betelgeuse', 'M13', 'NGC 224', 'Andromeda'] %}
+            <a href="{{ url_for('identify.identify_view', q=ex) }}"
+               class="text-xs px-3 py-1.5 rounded-lg transition-colors"
+               style="background:rgba(79,142,247,0.1);color:#93c5fd;
+                      border:1px solid rgba(79,142,247,0.2);">
+                {{ ex }}
+            </a>
+            {% endfor %}
+        </div>
+        <p class="text-xs mt-4" style="color:#666699;">{{ _('identify_hint') }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Ошибка: не найдено -->
+    {% if error == 'not_found' %}
+    <div class="card rounded-2xl p-6 text-center">
+        <p class="text-white mb-1">{{ _('identify_not_found') }}</p>
+        <p class="text-sm" style="color:#9999cc;">{{ _('identify_not_found_hint') }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Результат -->
+    {% if result %}
+    <div class="flex flex-col gap-6">
+
+        <!-- Карточка объекта -->
+        <div class="card rounded-2xl p-6">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-white mb-1">
+                        {{ result.main_id | trim }}
+                    </h2>
+                    {% if result.otype_txt %}
+                    <span class="text-xs px-2 py-0.5 rounded-full font-medium"
+                          style="background:rgba(159,122,234,0.15);color:#c4b5fd;">
+                        {{ result.otype_txt }}
+                    </span>
+                    {% endif %}
+                </div>
+                <a href="https://simbad.cds.unistra.fr/simbad/sim-id?Ident={{ result.main_id | urlencode }}"
+                   target="_blank" rel="noopener noreferrer"
+                   class="btn-secondary text-xs px-3 py-1.5 rounded-lg flex-shrink-0">
+                    {{ _('identify_simbad_link') }} ↗
+                </a>
+            </div>
+
+            <!-- Координаты -->
+            {% if result.ra is not none and result.dec is not none %}
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div class="rounded-xl p-4"
+                     style="background:rgba(79,142,247,0.06);border:1px solid rgba(79,142,247,0.12);">
+                    <p class="text-xs mb-1" style="color:#666699;">RA (прямое восхождение)</p>
+                    <p class="text-sm font-medium text-white">{{ "%.6f"|format(result.ra|float) }}°</p>
+                </div>
+                <div class="rounded-xl p-4"
+                     style="background:rgba(79,142,247,0.06);border:1px solid rgba(79,142,247,0.12);">
+                    <p class="text-xs mb-1" style="color:#666699;">Dec (склонение)</p>
+                    <p class="text-sm font-medium text-white">{{ "%.6f"|format(result.dec|float) }}°</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Карта неба Aladin Lite -->
+        {% if result.ra is not none and result.dec is not none %}
+        <div class="card rounded-2xl overflow-hidden">
+            <div class="px-5 py-3 border-b" style="border-color:rgba(79,142,247,0.1);">
+                <h3 class="text-sm font-semibold text-white">{{ _('identify_sky_map') }}</h3>
+            </div>
+            <div id="aladin-identify-div" style="width:100%;height:420px;"></div>
+        </div>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{% if result and result.ra is not none and result.dec is not none %}
+<script>
+    A.init.then(() => {
+        A.aladin('#aladin-identify-div', {
+            survey: 'P/DSS2/color',
+            fov: 0.5,
+            target: '{{ result.ra }} {{ result.dec }}',
+            showReticle: true,
+            showZoomControl: true,
+            showLayersControl: true,
+            showFullscreenControl: true,
+            showShareControl: false,
+            backgroundColor: '#06061a',
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('catalog_title') }} — Astroshare{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-10">
+
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-white">{{ _('catalog_title') }}</h1>
+            <p class="text-sm mt-1" style="color:#9999cc;">{{ _('catalog_subtitle') }}</p>
+        </div>
+        <span class="text-sm" style="color:#666699;">
+            {{ _('catalog_found') }}: <strong class="text-white">{{ total }}</strong>
+        </span>
+    </div>
+
+    <!-- Поиск + фильтры -->
+    <form method="GET" action="{{ url_for('catalog.catalog_view') }}"
+          class="flex flex-wrap gap-3 mb-8 items-center">
+
+        <!-- Поисковая строка -->
+        <input type="text" name="q" value="{{ query }}"
+               placeholder="{{ _('catalog_search_placeholder') }}"
+               class="flex-1 min-w-48 rounded-xl px-4 py-2.5 text-sm"
+               style="background:rgba(13,13,46,0.9);border:1px solid rgba(79,142,247,0.3);
+                      color:#e8e8ff;outline:none;"
+               onfocus="this.style.borderColor='rgba(79,142,247,0.6)'"
+               onblur="this.style.borderColor='rgba(79,142,247,0.3)'">
+
+        <!-- Фильтр по типу -->
+        <select name="type"
+                class="rounded-xl px-4 py-2.5 text-sm"
+                style="background:rgba(13,13,46,0.95);border:1px solid rgba(79,142,247,0.3);
+                       color:#e8e8ff;outline:none;">
+            <option value="">{{ _('filter_all') }}</option>
+            {% set labels = type_labels_ru if get_locale() == 'ru' else type_labels_en %}
+            {% for t in object_types %}
+            <option value="{{ t }}" {% if type_f == t %}selected{% endif %}>
+                {{ labels.get(t, t) }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <!-- Сортировка -->
+        <select name="sort"
+                class="rounded-xl px-4 py-2.5 text-sm"
+                style="background:rgba(13,13,46,0.95);border:1px solid rgba(79,142,247,0.3);
+                       color:#e8e8ff;outline:none;">
+            <option value="name"      {% if sort_by == 'name'      %}selected{% endif %}>{{ _('catalog_sort_name') }}</option>
+            <option value="distance"  {% if sort_by == 'distance'  %}selected{% endif %}>{{ _('catalog_sort_distance') }}</option>
+            <option value="magnitude" {% if sort_by == 'magnitude' %}selected{% endif %}>{{ _('catalog_sort_magnitude') }}</option>
+        </select>
+
+        <button type="submit" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold">
+            {{ _('identify_search') }}
+        </button>
+        {% if query or type_f %}
+        <a href="{{ url_for('catalog.catalog_view') }}"
+           class="text-sm" style="color:#9999cc;">✕ {{ _('catalog_reset') }}</a>
+        {% endif %}
+    </form>
+
+    <!-- Таблица объектов -->
+    {% if items %}
+    <div class="card rounded-2xl overflow-hidden">
+        <table class="w-full text-sm">
+            <thead>
+                <tr style="border-bottom:1px solid rgba(79,142,247,0.15);
+                           background:rgba(79,142,247,0.05);">
+                    <th class="text-left px-4 py-3 font-semibold" style="color:#9999cc;">{{ _('catalog_col_object') }}</th>
+                    <th class="text-left px-4 py-3 font-semibold hidden sm:table-cell" style="color:#9999cc;">{{ _('catalog_col_type') }}</th>
+                    <th class="text-left px-4 py-3 font-semibold hidden md:table-cell" style="color:#9999cc;">{{ _('catalog_col_constellation') }}</th>
+                    <th class="text-right px-4 py-3 font-semibold" style="color:#9999cc;">{{ _('catalog_col_distance') }}</th>
+                    <th class="text-right px-4 py-3 font-semibold hidden lg:table-cell" style="color:#9999cc;">{{ _('catalog_col_magnitude') }}</th>
+                    <th class="px-4 py-3"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in items %}
+                <tr class="border-b transition-colors"
+                    style="border-color:rgba(79,142,247,0.07);"
+                    onmouseover="this.style.background='rgba(79,142,247,0.05)'"
+                    onmouseout="this.style.background=''">
+
+                    <!-- Название -->
+                    <td class="px-4 py-3">
+                        <div class="font-medium text-white">
+                            {{ obj.name_ru if get_locale() == 'ru' else obj.name }}
+                        </div>
+                        <div class="text-xs mt-0.5" style="color:#666699;">
+                            {{ obj.catalog_id }}
+                        </div>
+                    </td>
+
+                    <!-- Тип -->
+                    <td class="px-4 py-3 hidden sm:table-cell">
+                        {% set labels = type_labels_ru if get_locale() == 'ru' else type_labels_en %}
+                        <span class="text-xs px-2 py-0.5 rounded-full"
+                              style="{% if obj.type == 'galaxy' %}background:rgba(159,122,234,0.15);color:#c4b5fd;
+                                     {% elif obj.type == 'nebula' %}background:rgba(34,211,238,0.12);color:#67e8f9;
+                                     {% elif obj.type == 'star_cluster' %}background:rgba(250,204,21,0.12);color:#fde047;
+                                     {% elif obj.type == 'star' %}background:rgba(249,115,22,0.12);color:#fdba74;
+                                     {% else %}background:rgba(79,142,247,0.12);color:#93c5fd;{% endif %}">
+                            {{ labels.get(obj.type, obj.type) }}
+                        </span>
+                    </td>
+
+                    <!-- Созвездие -->
+                    <td class="px-4 py-3 hidden md:table-cell text-sm" style="color:#9999cc;">
+                        {{ obj.constellation }}
+                    </td>
+
+                    <!-- Расстояние -->
+                    <td class="px-4 py-3 text-right">
+                        <span class="text-sm font-medium text-white">
+                            {{ obj.distance_note_en if get_locale() == 'en' else obj.distance_note }}
+                        </span>
+                    </td>
+
+                    <!-- Звёздная величина -->
+                    <td class="px-4 py-3 text-right hidden lg:table-cell text-sm" style="color:#9999cc;">
+                        {{ obj.magnitude if obj.magnitude is not none else '—' }}
+                    </td>
+
+                    <!-- Кнопка -->
+                    <td class="px-4 py-3 text-right">
+                        <a href="{{ url_for('catalog.object_detail', object_id=obj.id) }}"
+                           class="text-xs px-3 py-1.5 rounded-lg transition-colors"
+                           style="border:1px solid rgba(79,142,247,0.3);color:#93c5fd;"
+                           onmouseover="this.style.background='rgba(79,142,247,0.1)'"
+                           onmouseout="this.style.background=''">
+                            {{ _('catalog_details') }}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="card rounded-2xl p-12 text-center">
+        <p class="text-white mb-1">{{ _('catalog_nothing_found') }}</p>
+        <a href="{{ url_for('catalog.catalog_view') }}"
+           class="text-sm text-blue-400 hover:text-blue-300">{{ _('catalog_reset') }}</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

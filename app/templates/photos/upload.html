@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+
+{% block title %}{{ _('upload_title') }} — Astroshare{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-12">
+
+    <h1 class="text-2xl font-bold text-white mb-8">{{ _('upload_title') }}</h1>
+
+    <form method="POST" enctype="multipart/form-data" novalidate>
+        {{ form.hidden_tag() }}
+
+        <!-- ===== ФАЙЛ ===== -->
+        <div class="card rounded-2xl p-6 mb-5">
+            <h2 class="text-sm font-semibold text-white mb-4">{{ _('upload_section_file') }}</h2>
+
+            <!-- Область перетаскивания -->
+            <div id="drop-zone"
+                 class="border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-colors"
+                 style="border-color: rgba(79,142,247,0.3);"
+                 onclick="document.getElementById('photo-input').click()">
+                <svg class="mx-auto mb-3" width="40" height="40" fill="none" viewBox="0 0 24 24"
+                     stroke="rgba(79,142,247,0.6)" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0
+                             0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                </svg>
+                <p class="text-sm" style="color: #9999cc;">{{ _('upload_drop_hint') }}</p>
+                <p class="text-xs mt-1" style="color: #666699;">JPG, PNG, TIFF — {{ _('upload_max_size') }}</p>
+                <p id="selected-file" class="text-xs mt-2 text-blue-400 font-medium hidden"></p>
+            </div>
+            {{ form.photo(id="photo-input", class="hidden") }}
+            {% for error in form.photo.errors %}
+                <p class="mt-2 text-xs" style="color: #f87171;">{{ _(error) }}</p>
+            {% endfor %}
+        </div>
+
+        <!-- ===== ОСНОВНОЕ ===== -->
+        <div class="card rounded-2xl p-6 mb-5">
+            <h2 class="text-sm font-semibold text-white mb-4">{{ _('upload_section_basic') }}</h2>
+            {{ render_field(form.title,            label=_('field_title'),            placeholder=_('title_placeholder')) }}
+            {{ render_field(form.description,      label=_('field_description'),      placeholder=_('description_placeholder')) }}
+            {{ render_field(form.observation_date, label=_('field_observation_date')) }}
+            <label class="flex items-center gap-3 cursor-pointer mt-1">
+                {{ form.is_public(class="w-4 h-4 rounded accent-blue-500") }}
+                <span class="text-sm" style="color: #9999cc;">{{ _('field_is_public') }}</span>
+            </label>
+        </div>
+
+        <!-- ===== АСТРОНОМИЧЕСКИЕ ДАННЫЕ ===== -->
+        <div class="card rounded-2xl p-6 mb-5">
+            <h2 class="text-sm font-semibold text-white mb-4">{{ _('upload_section_astro') }}</h2>
+            <div class="grid grid-cols-2 gap-x-4">
+                {{ render_field(form.object_name, label=_('field_object_name'), placeholder='M31, NGC 7000...') }}
+                <div class="mb-5">
+                    <label class="block text-sm font-medium mb-1.5" style="color: #9999cc;">
+                        {{ _('field_object_type') }}
+                    </label>
+                    {{ form.object_type(
+                        class="w-full rounded-lg px-3 py-2.5 text-sm",
+                        style="background: rgba(13,13,46,0.9); border: 1px solid rgba(79,142,247,0.25);
+                               color: #e8e8ff; outline: none;"
+                    ) }}
+                </div>
+            </div>
+            {{ render_field(form.constellation, label=_('field_constellation'), placeholder='Andromeda, Orion...') }}
+            <div class="grid grid-cols-2 gap-x-4">
+                {{ render_field(form.ra,  label=_('field_ra'),  placeholder='00:42:44') }}
+                {{ render_field(form.dec, label=_('field_dec'), placeholder='+41:16:09') }}
+            </div>
+        </div>
+
+        <!-- ===== ТЕХНИЧЕСКИЕ ДАННЫЕ ===== -->
+        <div class="card rounded-2xl p-6 mb-5">
+            <h2 class="text-sm font-semibold text-white mb-4">{{ _('upload_section_tech') }}</h2>
+            <div class="grid grid-cols-2 gap-x-4">
+                {{ render_field(form.telescope,    label=_('field_telescope'),    placeholder='Celestron C8') }}
+                {{ render_field(form.camera,       label=_('field_camera'),       placeholder='ZWO ASI294MC') }}
+                {{ render_field(form.focal_length, label=_('field_focal_length'), placeholder='2000') }}
+                {{ render_field(form.exposure_time,label=_('field_exposure_time'),placeholder='300') }}
+                {{ render_field(form.iso_gain,     label=_('field_iso_gain'),     placeholder='800 / 120') }}
+                {{ render_field(form.frame_count,  label=_('field_frame_count'),  placeholder='60') }}
+            </div>
+        </div>
+
+        <!-- ===== УСЛОВИЯ СЪЁМКИ ===== -->
+        <div class="card rounded-2xl p-6 mb-5">
+            <h2 class="text-sm font-semibold text-white mb-4">{{ _('upload_section_conditions') }}</h2>
+            <div class="grid grid-cols-2 gap-x-4">
+                {{ render_field(form.location_name, label=_('field_location'), placeholder='Подмосковье') }}
+                <div class="mb-5">
+                    <label class="block text-sm font-medium mb-1.5" style="color: #9999cc;">
+                        {{ _('field_bortle') }}
+                        <span class="text-xs ml-1" style="color: #666699;">(1=темно, 9=город)</span>
+                    </label>
+                    {{ form.bortle_scale(
+                        class="w-full rounded-lg px-3 py-2.5 text-sm",
+                        style="background: rgba(13,13,46,0.9); border: 1px solid rgba(79,142,247,0.25);
+                               color: #e8e8ff; outline: none;"
+                    ) }}
+                </div>
+            </div>
+            {{ render_field(form.tags, label=_('field_tags'), placeholder='deep-sky, туманность, хаббл') }}
+            <p class="text-xs -mt-3" style="color: #666699;">{{ _('tags_hint') }}</p>
+        </div>
+
+        <button type="submit"
+                class="btn-primary w-full py-3.5 rounded-xl font-semibold text-base">
+            {{ _('upload_submit') }}
+        </button>
+    </form>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const input = document.getElementById('photo-input');
+    const dropZone = document.getElementById('drop-zone');
+    const selectedFile = document.getElementById('selected-file');
+
+    input.addEventListener('change', () => {
+        if (input.files[0]) {
+            selectedFile.textContent = input.files[0].name;
+            selectedFile.classList.remove('hidden');
+            dropZone.style.borderColor = 'rgba(79,142,247,0.7)';
+        }
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = 'rgba(79,142,247,0.8)';
+        dropZone.style.background = 'rgba(79,142,247,0.05)';
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.style.borderColor = 'rgba(79,142,247,0.3)';
+        dropZone.style.background = '';
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            // Передаём файл в скрытый input
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            input.files = dt.files;
+            selectedFile.textContent = file.name;
+            selectedFile.classList.remove('hidden');
+            dropZone.style.borderColor = 'rgba(79,142,247,0.7)';
+            dropZone.style.background = '';
+        }
+    });
+</script>
+{% endblock %}

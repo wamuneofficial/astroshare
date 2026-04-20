@@ -1,0 +1,830 @@
+# English translations for Astroshare
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+# Navigation
+msgid "nav_home"
+msgstr "Home"
+
+msgid "nav_gallery"
+msgstr "Gallery"
+
+msgid "nav_news"
+msgstr "News"
+
+msgid "nav_login"
+msgstr "Log in"
+
+msgid "nav_register"
+msgstr "Register"
+
+msgid "nav_logout"
+msgstr "Log out"
+
+msgid "nav_notifications"
+msgstr "Notifications"
+
+# Homepage
+msgid "index_hero_title"
+msgstr "Share your universe"
+
+msgid "index_hero_subtitle"
+msgstr "A platform for amateur astrophotographers and school science projects. Upload your shots, share discoveries, explore the cosmos."
+
+msgid "index_cta_explore"
+msgstr "Explore gallery"
+
+msgid "index_cta_upload"
+msgstr "Upload photo"
+
+msgid "index_stat_photos"
+msgstr "Photos"
+
+msgid "index_stat_users"
+msgstr "Users"
+
+msgid "index_stat_likes"
+msgstr "Likes"
+
+msgid "index_features_title"
+msgstr "What Astroshare can do"
+
+msgid "feature_gallery_title"
+msgstr "Public gallery"
+
+msgid "feature_gallery_desc"
+msgstr "Share your astrophotography with the community. Filter by objects, constellations, and image types."
+
+msgid "feature_platesolve_title"
+msgstr "Telescope integration"
+
+msgid "feature_platesolve_desc"
+msgstr "Automatically upload images with plate solving results directly from your telescope control system."
+
+msgid "feature_news_title"
+msgstr "Space news"
+
+msgid "feature_news_desc"
+msgstr "Latest news from NASA and world space agencies, updated every 6 hours."
+
+msgid "footer_tagline"
+msgstr "A platform for amateur astrophotographers"
+
+# --- Auth ---
+
+msgid "register_title"
+msgstr "Create account"
+
+msgid "register_subtitle"
+msgstr "Join the astrophotography community"
+
+msgid "register_submit"
+msgstr "Create account"
+
+msgid "register_have_account"
+msgstr "Already have an account?"
+
+msgid "login_title"
+msgstr "Welcome back"
+
+msgid "login_subtitle"
+msgstr "Log in to your account"
+
+msgid "login_submit"
+msgstr "Log in"
+
+msgid "login_forgot"
+msgstr "Forgot password?"
+
+msgid "login_no_account"
+msgstr "Don't have an account?"
+
+msgid "forgot_title"
+msgstr "Reset password"
+
+msgid "forgot_subtitle"
+msgstr "Enter your email and we'll send you a reset link"
+
+msgid "forgot_submit"
+msgstr "Send reset link"
+
+msgid "reset_title"
+msgstr "New password"
+
+msgid "reset_subtitle"
+msgstr "Choose a new password for your account"
+
+msgid "reset_submit"
+msgstr "Save password"
+
+msgid "back_to_login"
+msgstr "← Back to login"
+
+# Form fields
+msgid "field_username"
+msgstr "Username"
+
+msgid "field_email"
+msgstr "Email"
+
+msgid "field_password"
+msgstr "Password"
+
+msgid "field_confirm_password"
+msgstr "Confirm password"
+
+msgid "field_remember_me"
+msgstr "Remember me"
+
+msgid "field_bio"
+msgstr "About me"
+
+msgid "field_telescopes"
+msgstr "Telescopes"
+
+msgid "field_location"
+msgstr "Location"
+
+msgid "field_website"
+msgstr "Website"
+
+msgid "field_avatar"
+msgstr "Avatar"
+
+# Field hints
+msgid "bio_placeholder"
+msgstr "Tell us a bit about yourself and your passion for astrophotography"
+
+msgid "telescopes_placeholder"
+msgstr "e.g. Celestron C8, Sky-Watcher 200P"
+
+msgid "location_placeholder"
+msgstr "City or region"
+
+msgid "avatar_hint"
+msgstr "max 2 MB"
+
+# Flash messages
+msgid "flash_register_success"
+msgstr "Account created! Check the confirmation link in the server console."
+
+msgid "flash_login_invalid"
+msgstr "Invalid email or password."
+
+msgid "flash_login_banned"
+msgstr "This account has been banned. Contact an administrator."
+
+msgid "flash_logout"
+msgstr "You have been logged out."
+
+msgid "flash_confirm_invalid"
+msgstr "Invalid or expired confirmation link."
+
+msgid "flash_confirm_already"
+msgstr "Email already confirmed."
+
+msgid "flash_confirm_success"
+msgstr "Email confirmed! You can now log in."
+
+msgid "flash_forgot_sent"
+msgstr "If that email is registered, the reset link will appear in the server console."
+
+msgid "flash_reset_invalid"
+msgstr "Invalid or expired password reset link."
+
+msgid "flash_reset_success"
+msgstr "Password changed successfully. Log in with your new password."
+
+msgid "flash_profile_saved"
+msgstr "Profile saved."
+
+# Validation errors
+msgid "only_latin"
+msgstr "Only Latin letters and digits allowed."
+
+msgid "password_too_short"
+msgstr "Password must be at least 8 characters."
+
+msgid "passwords_mismatch"
+msgstr "Passwords do not match."
+
+msgid "username_taken"
+msgstr "This username is already taken."
+
+msgid "email_taken"
+msgstr "This email is already registered."
+
+msgid "invalid_twitter"
+msgstr "Only letters, digits and underscores allowed."
+
+msgid "invalid_instagram"
+msgstr "Only letters, digits, dots and underscores allowed."
+
+msgid "images_only"
+msgstr "Only JPG and PNG images are allowed."
+
+# --- Profile ---
+
+msgid "profile_edit"
+msgstr "Edit profile"
+
+msgid "profile_member_since"
+msgstr "Member since"
+
+msgid "profile_website"
+msgstr "Website"
+
+msgid "profile_telescopes"
+msgstr "Telescopes"
+
+msgid "profile_stat_photos"
+msgstr "Photos"
+
+msgid "profile_stat_likes"
+msgstr "Likes received"
+
+msgid "profile_stat_comments"
+msgstr "Comments"
+
+msgid "profile_email_not_confirmed"
+msgstr "Email not confirmed. Check the link in the server console."
+
+msgid "profile_no_photos_yet"
+msgstr "No photos yet. Upload your first astrophoto!"
+
+msgid "profile_upload_first"
+msgstr "Upload a photo"
+
+msgid "public_no_photos"
+msgstr "This user hasn't uploaded any photos yet."
+
+msgid "edit_profile_title"
+msgstr "Edit profile"
+
+msgid "edit_social_links"
+msgstr "Social links"
+
+msgid "edit_save"
+msgstr "Save changes"
+
+msgid "back_to_profile"
+msgstr "Profile"
+
+# --- Email verification ---
+
+msgid "verify_title"
+msgstr "Verify your email"
+
+msgid "verify_subtitle"
+msgstr "We sent a 6-digit code to"
+
+msgid "verify_console_hint"
+msgstr "In development mode the code appears in the server console (Terminal)."
+
+msgid "verify_submit"
+msgstr "Verify"
+
+msgid "verify_wrong_email"
+msgstr "Wrong email?"
+
+msgid "verify_register_again"
+msgstr "Register again"
+
+msgid "flash_code_invalid"
+msgstr "Invalid code. Check the server console and try again."
+
+msgid "flash_register_success_admin"
+msgstr "Welcome, administrator! Your account is ready."
+
+msgid "flash_login_not_confirmed"
+msgstr "Please confirm your email first. A new code has been sent to the console."
+
+msgid "code_length"
+msgstr "The code must be exactly 6 digits."
+
+# --- Navigation (stage 3) ---
+
+msgid "nav_upload"
+msgstr "Upload"
+
+# --- Photo upload ---
+
+msgid "upload_title"
+msgstr "Upload photo"
+
+msgid "upload_section_file"
+msgstr "File"
+
+msgid "upload_section_basic"
+msgstr "Basic info"
+
+msgid "upload_section_astro"
+msgstr "Astronomical data"
+
+msgid "upload_section_tech"
+msgstr "Technical data"
+
+msgid "upload_section_conditions"
+msgstr "Shooting conditions"
+
+msgid "upload_drop_hint"
+msgstr "Click or drag a file here"
+
+msgid "upload_max_size"
+msgstr "max 20 MB"
+
+msgid "upload_submit"
+msgstr "Publish photo"
+
+msgid "format_not_allowed"
+msgstr "Only JPG, PNG and TIFF formats are allowed."
+
+msgid "not_an_image"
+msgstr "The file is not a valid image or is corrupted."
+
+# Upload form fields
+msgid "field_title"
+msgstr "Title"
+
+msgid "field_description"
+msgstr "Description"
+
+msgid "field_observation_date"
+msgstr "Observation date"
+
+msgid "field_is_public"
+msgstr "Public photo (visible to everyone)"
+
+msgid "field_object_name"
+msgstr "Object"
+
+msgid "field_object_type"
+msgstr "Object type"
+
+msgid "field_constellation"
+msgstr "Constellation"
+
+msgid "field_ra"
+msgstr "RA (right ascension)"
+
+msgid "field_dec"
+msgstr "Dec (declination)"
+
+msgid "field_telescope"
+msgstr "Telescope"
+
+msgid "field_camera"
+msgstr "Camera"
+
+msgid "field_focal_length"
+msgstr "Focal length (mm)"
+
+msgid "field_exposure_time"
+msgstr "Single frame exposure (s)"
+
+msgid "field_iso_gain"
+msgstr "ISO / Gain"
+
+msgid "field_frame_count"
+msgstr "Frame count"
+
+msgid "field_bortle"
+msgstr "Bortle scale"
+
+msgid "field_tags"
+msgstr "Tags"
+
+msgid "title_placeholder"
+msgstr "Andromeda Galaxy"
+
+msgid "description_placeholder"
+msgstr "Tell us about the shooting conditions, equipment, processing..."
+
+msgid "tags_hint"
+msgstr "Comma separated: deep-sky, nebula, M31"
+
+# Photo flash messages
+msgid "flash_photo_uploaded"
+msgstr "Photo uploaded successfully!"
+
+msgid "flash_photo_deleted"
+msgstr "Photo deleted."
+
+# --- Photo detail page ---
+
+msgid "photo_copy_link"
+msgstr "Copy link"
+
+msgid "photo_link_copied"
+msgstr "Copied!"
+
+msgid "photo_delete"
+msgstr "Delete"
+
+msgid "photo_confirm_delete"
+msgstr "Delete this photo? This cannot be undone."
+
+msgid "photo_private"
+msgstr "Private"
+
+msgid "photo_author"
+msgstr "Author"
+
+msgid "photo_observed"
+msgstr "Observed"
+
+msgid "photo_uploaded"
+msgstr "Uploaded"
+
+msgid "photo_sky_map"
+msgstr "Sky map"
+
+msgid "photo_comments"
+msgstr "Comments"
+
+msgid "photo_no_preview"
+msgstr "Preview not available"
+
+msgid "photo_section_astro"
+msgstr "Astronomy"
+
+msgid "photo_section_tech"
+msgstr "Equipment"
+
+msgid "photo_section_conditions"
+msgstr "Conditions"
+
+msgid "comments_coming_soon"
+msgstr "Comments will appear in the next update."
+
+# Units
+msgid "unit_mm"
+msgstr "mm"
+
+msgid "unit_sec"
+msgstr "s"
+
+msgid "unit_frames"
+msgstr "frames"
+
+# Object types
+msgid "galaxy"
+msgstr "Galaxy"
+
+msgid "nebula"
+msgstr "Nebula"
+
+msgid "planet"
+msgstr "Planet"
+
+msgid "star_cluster"
+msgstr "Star cluster"
+
+msgid "solar"
+msgstr "Solar system object"
+
+msgid "double_star"
+msgstr "Double star"
+
+msgid "other"
+msgstr "Other"
+
+# --- My photos ---
+
+msgid "my_photos_title"
+msgstr "My photos"
+
+msgid "my_photos_empty"
+msgstr "No photos yet"
+
+msgid "my_photos_empty_hint"
+msgstr "Upload your first astrophoto and share it with the community."
+
+msgid "pagination_prev"
+msgstr "Previous"
+
+msgid "pagination_next"
+msgstr "Next"
+
+# --- Feed ---
+
+msgid "feed_title"
+msgstr "Feed"
+
+msgid "feed_subtitle"
+msgstr "Photos and discussions from the astrophotography community"
+
+msgid "feed_empty_title"
+msgstr "The feed is empty"
+
+msgid "feed_empty_hint"
+msgstr "Be the first — upload a photo or ask a question!"
+
+msgid "card_photo"
+msgstr "Photo"
+
+# --- Posts ---
+
+msgid "nav_ask"
+msgstr "Ask a question"
+
+msgid "post_type_question"
+msgstr "Question"
+
+msgid "post_type_tip"
+msgstr "Tip"
+
+msgid "post_create_title"
+msgstr "New post"
+
+msgid "field_content"
+msgstr "Content"
+
+msgid "post_title_placeholder"
+msgstr "Briefly describe the topic"
+
+msgid "post_content_placeholder"
+msgstr "More details..."
+
+msgid "post_submit"
+msgstr "Publish"
+
+msgid "post_confirm_delete"
+msgstr "Delete this post? This cannot be undone."
+
+msgid "flash_post_created"
+msgstr "Post published!"
+
+msgid "flash_post_deleted"
+msgstr "Post deleted."
+
+# --- Comments ---
+
+msgid "flash_comment_added"
+msgstr "Comment added."
+
+msgid "comment_placeholder"
+msgstr "Write a comment..."
+
+msgid "comment_submit"
+msgstr "Submit"
+
+msgid "comment_login_required"
+msgstr "to leave a comment."
+
+# --- Gallery ---
+
+msgid "sort_new"
+msgstr "New"
+
+msgid "sort_popular"
+msgstr "Popular"
+
+msgid "filter_all"
+msgstr "All"
+
+msgid "gallery_empty"
+msgstr "No photos yet"
+
+# --- Profile (extra) ---
+
+msgid "profile_all_photos"
+msgstr "All photos"
+
+# --- News ---
+
+msgid "nav_news"
+msgstr "News"
+
+msgid "news_title"
+msgstr "Space News"
+
+msgid "news_subtitle"
+msgstr "Latest events from the world of astronomy and spaceflight"
+
+msgid "news_empty"
+msgstr "No news yet"
+
+msgid "news_read_more"
+msgstr "Read article"
+
+msgid "news_source_unknown"
+msgstr "Unknown source"
+
+msgid "news_api_error"
+msgstr "Could not load news"
+
+msgid "news_api_error_hint"
+msgstr "Check your internet connection and refresh the page."
+
+# --- Object identification ---
+
+msgid "nav_identify"
+msgstr "Objects"
+
+msgid "identify_title"
+msgstr "Object Identification"
+
+msgid "identify_subtitle"
+msgstr "Enter an object name or designation — get coordinates, type and a sky map"
+
+msgid "identify_placeholder"
+msgstr "M31, NGC 1952, Betelgeuse, Andromeda..."
+
+msgid "identify_search"
+msgstr "Search"
+
+msgid "identify_examples_title"
+msgstr "Example objects"
+
+msgid "identify_hint"
+msgstr "Use standard catalogue designations: Messier (M31), NGC (NGC 1952), star names (Betelgeuse)."
+
+msgid "identify_not_found"
+msgstr "Object not found in the SIMBAD database."
+
+msgid "identify_not_found_hint"
+msgstr "Try a standard designation: M 31, NGC 1952, Alpha Cen A"
+
+msgid "identify_sky_map"
+msgstr "Sky map"
+
+msgid "identify_simbad_link"
+msgstr "Open in SIMBAD"
+
+# --- Catalog ---
+
+msgid "nav_catalog"
+msgstr "Catalog"
+
+msgid "catalog_title"
+msgstr "Object Catalog"
+
+msgid "catalog_subtitle"
+msgstr "Stars, nebulae, galaxies and solar system bodies with distances"
+
+msgid "catalog_found"
+msgstr "Found"
+
+msgid "catalog_search_placeholder"
+msgstr "Search by name, constellation, catalog ID..."
+
+msgid "catalog_sort_name"
+msgstr "By name"
+
+msgid "catalog_sort_distance"
+msgstr "By distance"
+
+msgid "catalog_sort_magnitude"
+msgstr "By brightness"
+
+msgid "catalog_reset"
+msgstr "Reset filters"
+
+msgid "catalog_col_object"
+msgstr "Object"
+
+msgid "catalog_col_type"
+msgstr "Type"
+
+msgid "catalog_col_constellation"
+msgstr "Constellation"
+
+msgid "catalog_col_distance"
+msgstr "Distance"
+
+msgid "catalog_col_magnitude"
+msgstr "Magnitude"
+
+msgid "catalog_details"
+msgstr "Details"
+
+msgid "catalog_nothing_found"
+msgstr "Nothing found"
+
+msgid "catalog_section_data"
+msgstr "Data"
+
+msgid "catalog_back"
+msgstr "Back to catalog"
+
+# --- Private messages ---
+
+msgid "nav_messages"
+msgstr "Messages"
+
+msgid "msg_inbox"
+msgstr "Inbox"
+
+msgid "msg_sent"
+msgstr "Sent"
+
+msgid "msg_compose"
+msgstr "Compose"
+
+msgid "msg_to"
+msgstr "To"
+
+msgid "msg_from"
+msgstr "From"
+
+msgid "msg_subject"
+msgstr "Subject"
+
+msgid "msg_body"
+msgstr "Message"
+
+msgid "msg_reply"
+msgstr "Reply"
+
+msgid "msg_send_btn"
+msgstr "Send"
+
+msgid "msg_delete"
+msgstr "Delete message"
+
+msgid "msg_confirm_delete"
+msgstr "Delete this message?"
+
+msgid "msg_recipient_placeholder"
+msgstr "Username"
+
+msgid "msg_subject_placeholder"
+msgstr "Message subject"
+
+msgid "msg_body_placeholder"
+msgstr "Message text..."
+
+msgid "msg_empty_inbox"
+msgstr "No incoming messages"
+
+msgid "msg_empty_sent"
+msgstr "No sent messages"
+
+msgid "msg_user_not_found"
+msgstr "User not found."
+
+msgid "msg_self_send"
+msgstr "You cannot send a message to yourself."
+
+msgid "msg_sent_ok"
+msgstr "Message sent!"
+
+msgid "msg_deleted"
+msgstr "Message deleted."
+
+# --- Friends ---
+
+msgid "friends_title"
+msgstr "Friends"
+
+msgid "friends_empty"
+msgstr "No friends yet"
+
+msgid "friends_empty_hint"
+msgstr "Find users in the gallery and send them a friend request."
+
+msgid "friends_pending_title"
+msgstr "Friend requests"
+
+msgid "profile_stat_friends"
+msgstr "Friends"
+
+msgid "friend_add"
+msgstr "Add friend"
+
+msgid "friend_remove"
+msgstr "Remove friend"
+
+msgid "friend_confirm_remove"
+msgstr "Remove this user from friends?"
+
+msgid "friend_pending_sent"
+msgstr "Request sent"
+
+msgid "friend_accept"
+msgstr "Accept"
+
+msgid "friend_decline"
+msgstr "Decline"
+
+msgid "friend_request_sent"
+msgstr "Friend request sent!"
+
+msgid "friend_request_accepted"
+msgstr "Request accepted! You are now friends."
+
+msgid "friend_request_declined"
+msgstr "Request declined."
+
+msgid "friend_removed"
+msgstr "Friend removed."
+
+msgid "friend_self"
+msgstr "You cannot add yourself as a friend."
+
+msgid "friend_already"
+msgstr "You are already friends."

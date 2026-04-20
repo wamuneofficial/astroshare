@@ -1,0 +1,56 @@
+{% macro render_field(field, label=None, placeholder='', type=None) %}
+{#
+  Универсальный макрос для рендеринга поля формы WTForms.
+  Использование: {{ render_field(form.email, placeholder='you@example.com') }}
+#}
+<div class="mb-5">
+    <label for="{{ field.id }}" class="block text-sm font-medium mb-1.5" style="color: #9999cc;">
+        {{ label or field.label.text }}
+        {% if field.flags.required %}
+            <span style="color: #f87171;" class="ml-0.5">*</span>
+        {% endif %}
+    </label>
+
+    {% if field.type == 'TextAreaField' %}
+        {{ field(
+            id=field.id,
+            class="w-full rounded-lg px-3 py-2.5 text-sm resize-none",
+            style="background: rgba(13,13,46,0.9); border: 1px solid rgba(79,142,247,0.25);
+                   color: #e8e8ff; outline: none;",
+            placeholder=placeholder,
+            rows=4,
+            onfocus="this.style.borderColor='rgba(79,142,247,0.6)'",
+            onblur="this.style.borderColor='rgba(79,142,247,0.25)'"
+        ) }}
+    {% elif field.type == 'BooleanField' %}
+        <div class="flex items-center gap-2">
+            {{ field(id=field.id, class="w-4 h-4 rounded accent-blue-500") }}
+            <span class="text-sm" style="color: #9999cc;">{{ label or field.label.text }}</span>
+        </div>
+    {% elif field.type == 'FileField' %}
+        {{ field(
+            id=field.id,
+            class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
+                   file:text-sm file:font-medium file:cursor-pointer",
+            style="color: #9999cc;",
+            **({'file:background': 'rgba(79,142,247,0.15)', 'file:color': '#4f8ef7'} if false else {})
+        ) }}
+    {% else %}
+        {{ field(
+            id=field.id,
+            class="w-full rounded-lg px-3 py-2.5 text-sm",
+            style="background: rgba(13,13,46,0.9); border: 1px solid rgba(79,142,247,0.25);
+                   color: #e8e8ff; outline: none;",
+            placeholder=placeholder,
+            onfocus="this.style.borderColor='rgba(79,142,247,0.6)'",
+            onblur="this.style.borderColor='rgba(79,142,247,0.25)'"
+        ) }}
+    {% endif %}
+
+    {% if field.errors %}
+        {% for error in field.errors %}
+            <p class="mt-1 text-xs" style="color: #f87171;">{{ _(error) }}</p>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endmacro %}

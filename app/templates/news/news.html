@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('news_title') }} — Astroshare{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-10">
+
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-white">{{ _('news_title') }}</h1>
+            <p class="text-sm mt-1" style="color:#9999cc;">{{ _('news_subtitle') }}</p>
+        </div>
+    </div>
+
+    {% if api_error %}
+    <div class="card rounded-2xl p-10 text-center">
+        <p class="text-lg text-white mb-2">{{ _('news_api_error') }}</p>
+        <p class="text-sm" style="color:#9999cc;">{{ _('news_api_error_hint') }}</p>
+    </div>
+
+    {% elif not articles %}
+    <div class="card rounded-2xl p-10 text-center">
+        <p class="text-lg text-white">{{ _('news_empty') }}</p>
+    </div>
+
+    {% else %}
+    <div class="space-y-5">
+        {% for article in articles %}
+        <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer"
+           class="card rounded-2xl overflow-hidden flex flex-col sm:flex-row gap-0 group block">
+
+            <!-- Изображение -->
+            <div class="sm:w-56 sm:flex-shrink-0 overflow-hidden"
+                 style="background:#03030f; min-height:140px;">
+                {% if article.image_url %}
+                    <img src="{{ article.image_url }}"
+                         alt="{{ article.title }}"
+                         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                         style="min-height:140px;"
+                         onerror="this.parentElement.innerHTML='<div style=\'width:100%;height:100%;min-height:140px;display:flex;align-items:center;justify-content:center;color:rgba(79,142,247,0.3);font-size:2rem;\'>&#9733;</div>'">
+                {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-3xl"
+                         style="color:rgba(79,142,247,0.3); min-height:140px;">&#9733;</div>
+                {% endif %}
+            </div>
+
+            <!-- Текст -->
+            <div class="flex-1 p-5">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xs px-2 py-0.5 rounded-full font-medium"
+                          style="background:rgba(34,211,238,0.12);color:#67e8f9;">
+                        {{ article.news_site or _('news_source_unknown') }}
+                    </span>
+                    {% if article.published_dt %}
+                    <span class="text-xs" style="color:#666699;">
+                        {{ article.published_dt.strftime('%d.%m.%Y') }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <h2 class="text-base font-semibold text-white mb-2 group-hover:text-blue-300 transition-colors line-clamp-2">
+                    {{ article.title }}
+                </h2>
+
+                {% if article.summary %}
+                <p class="text-sm line-clamp-3 mb-3" style="color:#9999cc;">
+                    {{ article.summary }}
+                </p>
+                {% endif %}
+
+                <span class="text-xs font-medium" style="color:#4f8ef7;">
+                    {{ _('news_read_more') }} →
+                </span>
+            </div>
+
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Пагинация -->
+    {% if total_pages > 1 %}
+    <div class="flex justify-center gap-3 mt-10">
+        {% if page > 1 %}
+        <a href="{{ url_for('news.news_view', page=page-1) }}"
+           class="btn-secondary text-sm px-5 py-2 rounded-xl">
+            &larr; {{ _('pagination_prev') }}
+        </a>
+        {% endif %}
+        <span class="text-sm px-4 py-2" style="color:#9999cc;">
+            {{ page }} / {{ total_pages }}
+        </span>
+        {% if page < total_pages %}
+        <a href="{{ url_for('news.news_view', page=page+1) }}"
+           class="btn-secondary text-sm px-5 py-2 rounded-xl">
+            {{ _('pagination_next') }} &rarr;
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% endif %}
+</div>
+{% endblock %}

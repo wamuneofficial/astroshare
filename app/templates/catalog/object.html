@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ obj.name_ru if get_locale() == 'ru' else obj.name }} — {{ _('catalog_title') }}
+{% endblock %}
+
+{% block extra_head %}
+{% if obj.ra and obj.ra != '—' and obj.dec and obj.dec != '—' %}
+<link rel="stylesheet" href="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.min.css">
+<script src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js" charset="utf-8"></script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-10">
+
+    <!-- Хлебные крошки -->
+    <div class="flex items-center gap-2 text-sm mb-6" style="color:#666699;">
+        <a href="{{ url_for('main.index') }}" class="hover:text-white">{{ _('nav_home') }}</a>
+        <span>/</span>
+        <a href="{{ url_for('catalog.catalog_view') }}" class="hover:text-white">{{ _('catalog_title') }}</a>
+        <span>/</span>
+        <span style="color:#9999cc;">{{ obj.name_ru if get_locale() == 'ru' else obj.name }}</span>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+
+        <!-- Левая колонка: описание -->
+        <div class="flex-1 min-w-0 space-y-4">
+
+            <div class="card rounded-2xl p-6">
+                <div class="flex items-start justify-between gap-4 mb-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-white mb-1">
+                            {{ obj.name_ru if get_locale() == 'ru' else obj.name }}
+                        </h1>
+                        {% if obj.name != (obj.name_ru if get_locale() == 'ru' else obj.name) %}
+                        <p class="text-sm" style="color:#9999cc;">{{ obj.name }}</p>
+                        {% endif %}
+                        <p class="text-xs mt-1" style="color:#666699;">{{ obj.catalog_id }}</p>
+                    </div>
+                    <!-- Тип -->
+                    <span class="text-xs px-2 py-1 rounded-full flex-shrink-0 font-medium"
+                          style="{% if obj.type == 'galaxy' %}background:rgba(159,122,234,0.15);color:#c4b5fd;
+                                 {% elif obj.type == 'nebula' %}background:rgba(34,211,238,0.12);color:#67e8f9;
+                                 {% elif obj.type == 'star_cluster' %}background:rgba(250,204,21,0.12);color:#fde047;
+                                 {% elif obj.type == 'star' %}background:rgba(249,115,22,0.12);color:#fdba74;
+                                 {% else %}background:rgba(79,142,247,0.12);color:#93c5fd;{% endif %}">
+                        {{ obj.type_ru if get_locale() == 'ru' else obj.type }}
+                    </span>
+                </div>
+
+                <p class="text-sm leading-relaxed" style="color:#c8c8e8;">
+                    {{ obj.description_ru if get_locale() == 'ru' else obj.description_en }}
+                </p>
+            </div>
+
+            <!-- Карта неба -->
+            {% if obj.ra and obj.ra != '—' %}
+            <div class="card rounded-2xl overflow-hidden">
+                <div class="px-5 py-3 border-b" style="border-color:rgba(79,142,247,0.1);">
+                    <h3 class="text-sm font-semibold text-white">{{ _('identify_sky_map') }}</h3>
+                </div>
+                <div id="aladin-div" style="width:100%;height:380px;"></div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Правая колонка: данные -->
+        <div class="w-full lg:w-72 flex-shrink-0 space-y-4">
+
+            {% macro row(label, value) %}
+            {% if value and value != 'None' %}
+            <div class="flex justify-between items-baseline py-2 border-b"
+                 style="border-color:rgba(79,142,247,0.08);">
+                <span class="text-xs" style="color:#666699;">{{ label }}</span>
+                <span class="text-xs font-medium text-white ml-2 text-right">{{ value }}</span>
+            </div>
+            {% endif %}
+            {% endmacro %}
+
+            <div class="card rounded-2xl p-5">
+                <h3 class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#666699;">
+                    {{ _('catalog_col_distance') }}
+                </h3>
+                <p class="text-lg font-bold text-white">
+                    {{ obj.distance_note_en if get_locale() == 'en' else obj.distance_note }}
+                </p>
+                {% if obj.distance_ly > 0 %}
+                <p class="text-xs mt-1" style="color:#666699;">
+                    {{ "%.4g"|format(obj.distance_ly) }} ly
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="card rounded-2xl p-5">
+                <h3 class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#666699;">
+                    {{ _('catalog_section_data') }}
+                </h3>
+                {{ row(_('catalog_col_constellation'), obj.constellation) }}
+                {{ row('RA', obj.ra) }}
+                {{ row('Dec', obj.dec) }}
+                {% if obj.magnitude is not none %}
+                {{ row(_('catalog_col_magnitude'), obj.magnitude) }}
+                {% endif %}
+            </div>
+
+            <a href="{{ url_for('catalog.catalog_view') }}"
+               class="btn-secondary text-sm px-4 py-2.5 rounded-xl font-medium block text-center">
+                ← {{ _('catalog_back') }}
+            </a>
+
+            {% if obj.ra and obj.ra != '—' %}
+            <a href="https://simbad.cds.unistra.fr/simbad/sim-id?Ident={{ obj.catalog_id | urlencode }}"
+               target="_blank" rel="noopener"
+               class="text-xs block text-center mt-1" style="color:#4f8ef7;">
+                {{ _('identify_simbad_link') }} ↗
+            </a>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{% if obj.ra and obj.ra != '—' %}
+<script>
+    A.init.then(() => {
+        A.aladin('#aladin-div', {
+            survey: 'P/DSS2/color',
+            fov: {% if obj.type == 'galaxy' %}0.8{% elif obj.type == 'star_cluster' %}1.2{% else %}0.5{% endif %},
+            target: '{{ obj.ra }} {{ obj.dec }}',
+            showReticle: true,
+            showZoomControl: true,
+            showLayersControl: false,
+            showFullscreenControl: true,
+            backgroundColor: '#06061a',
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('msg_inbox') }} — Astroshare{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-10">
+
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <h1 class="text-2xl font-bold text-white">{{ _('msg_inbox') }}</h1>
+        <a href="{{ url_for('messages.compose') }}"
+           class="btn-primary text-sm px-4 py-2 rounded-xl font-semibold">
+            + {{ _('msg_compose') }}
+        </a>
+    </div>
+
+    <!-- Вкладки Входящие / Отправленные -->
+    <div class="flex gap-1 mb-6 card rounded-xl p-1 w-fit">
+        <a href="{{ url_for('messages.inbox') }}"
+           class="text-sm px-4 py-2 rounded-lg font-medium transition-colors"
+           style="{% if tab == 'inbox' %}background:rgba(79,142,247,0.2);color:#e8e8ff;{% else %}color:#9999cc;{% endif %}">
+            {{ _('msg_inbox') }}
+        </a>
+        <a href="{{ url_for('messages.sent') }}"
+           class="text-sm px-4 py-2 rounded-lg font-medium transition-colors"
+           style="{% if tab == 'sent' %}background:rgba(79,142,247,0.2);color:#e8e8ff;{% else %}color:#9999cc;{% endif %}">
+            {{ _('msg_sent') }}
+        </a>
+    </div>
+
+    {% if pagination.items %}
+    <div class="card rounded-2xl overflow-hidden">
+        {% for msg in pagination.items %}
+        <a href="{{ url_for('messages.view_message', message_id=msg.id) }}"
+           class="flex items-start gap-4 px-5 py-4 border-b block transition-colors
+                  {% if not msg.is_read and tab == 'inbox' %}bg-blue-900/10{% endif %}"
+           style="border-color:rgba(79,142,247,0.08);"
+           onmouseover="this.style.background='rgba(79,142,247,0.06)'"
+           onmouseout="this.style.background='{% if not msg.is_read and tab == 'inbox' %}rgba(30,50,100,0.15){% endif %}'">
+
+            <!-- Иконка прочитан/нет -->
+            <div class="flex-shrink-0 mt-1">
+                {% if not msg.is_read and tab == 'inbox' %}
+                    <div class="w-2 h-2 rounded-full" style="background:#4f8ef7;"></div>
+                {% else %}
+                    <div class="w-2 h-2 rounded-full" style="background:rgba(79,142,247,0.2);"></div>
+                {% endif %}
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-2 mb-0.5">
+                    <span class="text-sm font-medium {% if not msg.is_read and tab == 'inbox' %}text-white{% else %}text-white{% endif %} truncate">
+                        {{ msg.subject }}
+                    </span>
+                    <span class="text-xs flex-shrink-0" style="color:#666699;">
+                        {{ msg.created_at.strftime('%d.%m.%Y %H:%M') }}
+                    </span>
+                </div>
+                <div class="flex items-center gap-2 text-xs" style="color:#9999cc;">
+                    {% if tab == 'inbox' %}
+                    <span>{{ _('msg_from') }}: <span class="text-blue-400">{{ msg.sender.username }}</span></span>
+                    {% else %}
+                    <span>{{ _('msg_to') }}: <span class="text-blue-400">{{ msg.recipient.username }}</span></span>
+                    {% endif %}
+                </div>
+                <p class="text-xs mt-1 truncate" style="color:#666699;">
+                    {{ msg.body[:120] }}{% if msg.body|length > 120 %}…{% endif %}
+                </p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Пагинация -->
+    {% if pagination.pages > 1 %}
+    <div class="flex justify-center gap-3 mt-8">
+        {% if pagination.has_prev %}
+        <a href="{{ url_for('messages.inbox' if tab == 'inbox' else 'messages.sent', page=pagination.prev_num) }}"
+           class="btn-secondary text-sm px-4 py-2 rounded-xl">&larr; {{ _('pagination_prev') }}</a>
+        {% endif %}
+        <span class="text-sm px-4 py-2" style="color:#9999cc;">{{ pagination.page }} / {{ pagination.pages }}</span>
+        {% if pagination.has_next %}
+        <a href="{{ url_for('messages.inbox' if tab == 'inbox' else 'messages.sent', page=pagination.next_num) }}"
+           class="btn-secondary text-sm px-4 py-2 rounded-xl">{{ _('pagination_next') }} &rarr;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="card rounded-2xl p-12 text-center">
+        <p class="text-white mb-1">{{ _('msg_empty_inbox') if tab == 'inbox' else _('msg_empty_sent') }}</p>
+        <a href="{{ url_for('messages.compose') }}"
+           class="btn-primary text-sm px-5 py-2 rounded-xl font-semibold mt-4 inline-block">
+            {{ _('msg_compose') }}
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

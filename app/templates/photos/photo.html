@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}{{ photo.title }} — Astroshare{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="flex flex-col lg:flex-row gap-8">
+
+        <!-- ===== ЛЕВАЯ КОЛОНКА: изображение ===== -->
+        <div class="flex-1 min-w-0">
+
+            <!-- Хлебные крошки -->
+            <div class="flex items-center gap-2 text-sm mb-4" style="color:#666699;">
+                <a href="{{ url_for('main.index') }}" class="hover:text-white">{{ _('nav_home') }}</a>
+                <span>/</span>
+                <a href="{{ url_for('gallery.gallery_view') }}" class="hover:text-white">{{ _('nav_gallery') }}</a>
+                <span>/</span>
+                <span style="color:#9999cc;">{{ photo.title }}</span>
+            </div>
+
+            <!-- Изображение -->
+            <div class="card rounded-2xl overflow-hidden mb-4" style="background:#03030f;">
+                {% if photo.filename %}
+                    <img src="{{ url_for('main.uploaded_file', filename=photo.filename) }}"
+                         alt="{{ photo.title }}"
+                         class="w-full object-contain cursor-zoom-in"
+                         style="max-height:70vh;"
+                         onclick="openLightbox(this.src)">
+                {% else %}
+                    <div class="flex items-center justify-center h-64" style="color:#666699;">
+                        {{ _('photo_no_preview') }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Кнопки действий -->
+            <div class="flex items-center gap-3 mb-6">
+                <!-- Лайк -->
+                <button onclick="toggleLike({{ photo.id }})"
+                        id="like-btn"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                        style="border:1px solid rgba(79,142,247,0.3);
+                               {% if liked %}background:rgba(79,142,247,0.15);color:#93c5fd;
+                               {% else %}color:#9999cc;{% endif %}">
+                    <svg width="15" height="15" id="like-icon"
+                         fill="{% if liked %}currentColor{% else %}none{% endif %}"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312
+                                 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3
+                                 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
+                    </svg>
+                    <span id="likes-count">{{ photo.likes_count }}</span>
+                </button>
+
+                <!-- Скопировать ссылку -->
+                <button onclick="copyLink(event)"
+                        class="flex items-center gap-2 btn-secondary px-4 py-2 rounded-lg text-sm font-medium">
+                    <svg width="15" height="15" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/>
+                    </svg>
+                    <span id="copy-label">{{ _('photo_copy_link') }}</span>
+                </button>
+
+                <!-- Удалить -->
+                {% if current_user.is_authenticated and
+                      (current_user.id == photo.user_id or current_user.is_admin) %}
+                <form method="POST" action="{{ url_for('photos.delete_photo', photo_id=photo.id) }}"
+                      onsubmit="return confirm('{{ _('photo_confirm_delete') }}')">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit"
+                            class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                            style="border:1px solid rgba(239,68,68,0.3);color:#f87171;"
+                            onmouseover="this.style.background='rgba(239,68,68,0.1)'"
+                            onmouseout="this.style.background=''">
+                        {{ _('photo_delete') }}
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+
+            <!-- Aladin Lite -->
+            {% if photo.ra and photo.dec %}
+            <div class="card rounded-2xl overflow-hidden mb-6">
+                <div class="px-5 py-3 border-b" style="border-color:rgba(79,142,247,0.1);">
+                    <h3 class="text-sm font-semibold text-white">{{ _('photo_sky_map') }}</h3>
+                    <p class="text-xs mt-0.5" style="color:#9999cc;">
+                        RA {{ photo.ra }} &nbsp;|&nbsp; Dec {{ photo.dec }}
+                    </p>
+                </div>
+                <div id="aladin-lite-div" style="width:100%;height:320px;"></div>
+            </div>
+            {% endif %}
+
+            <!-- Комментарии -->
+            <div class="card rounded-2xl p-6">
+                <h3 class="text-sm font-semibold text-white mb-5">
+                    {{ _('photo_comments') }}
+                    <span class="ml-1" style="color:#666699;">({{ comments|length }})</span>
+                </h3>
+
+                {% for comment in comments %}
+                <div class="mb-4 {% if not loop.last %}pb-4 border-b{% endif %}"
+                     style="border-color:rgba(79,142,247,0.08);">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs font-medium text-blue-400">{{ comment.author.username }}</span>
+                        <span class="text-xs" style="color:#666699;">
+                            {{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}
+                        </span>
+                    </div>
+                    <p class="text-sm" style="color:#c8c8e8;">{{ comment.text }}</p>
+
+                    {% for reply in comment.replies.all() %}
+                    <div class="mt-3 ml-5 pl-4" style="border-left:2px solid rgba(79,142,247,0.2);">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs font-medium text-blue-400">{{ reply.author.username }}</span>
+                            <span class="text-xs" style="color:#666699;">
+                                {{ reply.created_at.strftime('%d.%m.%Y %H:%M') }}
+                            </span>
+                        </div>
+                        <p class="text-sm" style="color:#c8c8e8;">{{ reply.text }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                {% if current_user.is_authenticated %}
+                <form method="POST"
+                      action="{{ url_for('photos.add_comment', photo_id=photo.id) }}"
+                      class="mt-5" novalidate>
+                    {{ comment_form.hidden_tag() }}
+                    <textarea name="text" rows="3" maxlength="500" required
+                              placeholder="{{ _('comment_placeholder') }}"
+                              class="w-full rounded-xl px-4 py-3 text-sm resize-none"
+                              style="background:rgba(13,13,46,0.9);
+                                     border:1px solid rgba(79,142,247,0.25);
+                                     color:#e8e8ff;outline:none;"
+                              onfocus="this.style.borderColor='rgba(79,142,247,0.6)'"
+                              onblur="this.style.borderColor='rgba(79,142,247,0.25)'"></textarea>
+                    <button type="submit"
+                            class="btn-primary text-sm px-5 py-2 rounded-xl font-medium mt-2">
+                        {{ _('comment_submit') }}
+                    </button>
+                </form>
+                {% else %}
+                <p class="text-sm mt-4" style="color:#666699;">
+                    <a href="{{ url_for('auth.login') }}"
+                       class="text-blue-400 hover:text-blue-300">{{ _('nav_login') }}</a>
+                    {{ _('comment_login_required') }}
+                </p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- ===== ПРАВАЯ КОЛОНКА: метаданные ===== -->
+        <div class="w-full lg:w-80 flex-shrink-0 space-y-4">
+
+            <!-- Автор -->
+            <div class="card rounded-2xl p-5">
+                <a href="{{ url_for('profile.public_profile', username=photo.author.username) }}"
+                   class="flex items-center gap-3 group">
+                    {% if photo.author.avatar_filename %}
+                        <img src="{{ url_for('main.uploaded_file', filename=photo.author.avatar_filename) }}"
+                             class="w-10 h-10 rounded-full object-cover"
+                             style="border:1px solid rgba(79,142,247,0.3);">
+                    {% else %}
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold"
+                             style="background:linear-gradient(135deg,#1e1e5c,#141442);
+                                    border:1px solid rgba(79,142,247,0.3);color:#4f8ef7;">
+                            {{ photo.author.username[0].upper() }}
+                        </div>
+                    {% endif %}
+                    <div>
+                        <p class="text-sm font-medium text-white group-hover:text-blue-300 transition-colors">
+                            {{ photo.author.username }}
+                        </p>
+                        <p class="text-xs" style="color:#666699;">{{ _('photo_author') }}</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Название -->
+            <div class="card rounded-2xl p-5">
+                <h2 class="text-lg font-bold text-white mb-1">{{ photo.title }}</h2>
+                {% if photo.description %}
+                    <p class="text-sm mb-3" style="color:#9999cc;">{{ photo.description }}</p>
+                {% endif %}
+                <p class="text-xs" style="color:#666699;">
+                    {{ _('photo_observed') }}: {{ photo.observation_date.strftime('%d.%m.%Y') }}
+                </p>
+                <p class="text-xs mt-1" style="color:#666699;">
+                    {{ _('photo_uploaded') }}: {{ photo.created_at.strftime('%d.%m.%Y') }}
+                </p>
+                {% if photo.tags %}
+                <div class="flex flex-wrap gap-1 mt-3">
+                    {% for tag in photo.tags.split(',') %}{% if tag.strip() %}
+                    <span class="text-xs px-2 py-0.5 rounded-full"
+                          style="background:rgba(79,142,247,0.1);color:#93c5fd;
+                                 border:1px solid rgba(79,142,247,0.15);">
+                        {{ tag.strip() }}
+                    </span>
+                    {% endif %}{% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            {% macro meta_row(label, value) %}
+                {% if value %}
+                <div class="flex justify-between items-baseline py-1.5 border-b"
+                     style="border-color:rgba(79,142,247,0.08);">
+                    <span class="text-xs" style="color:#666699;">{{ label }}</span>
+                    <span class="text-xs font-medium text-white ml-2 text-right">{{ value }}</span>
+                </div>
+                {% endif %}
+            {% endmacro %}
+
+            {% if photo.object_name or photo.ra or photo.constellation %}
+            <div class="card rounded-2xl p-5">
+                <h3 class="text-xs font-semibold uppercase tracking-wider mb-3"
+                    style="color:#666699;">{{ _('photo_section_astro') }}</h3>
+                {{ meta_row(_('field_object_name'), photo.object_name) }}
+                {{ meta_row(_('field_object_type'), _(photo.object_type) if photo.object_type else '') }}
+                {{ meta_row(_('field_constellation'), photo.constellation) }}
+                {{ meta_row('RA', photo.ra) }}
+                {{ meta_row('Dec', photo.dec) }}
+            </div>
+            {% endif %}
+
+            {% if photo.telescope or photo.camera or photo.exposure_time %}
+            <div class="card rounded-2xl p-5">
+                <h3 class="text-xs font-semibold uppercase tracking-wider mb-3"
+                    style="color:#666699;">{{ _('photo_section_tech') }}</h3>
+                {{ meta_row(_('field_telescope'), photo.telescope) }}
+                {{ meta_row(_('field_camera'), photo.camera) }}
+                {{ meta_row(_('field_focal_length'),
+                    (photo.focal_length ~ ' ' ~ _('unit_mm')) if photo.focal_length else '') }}
+                {{ meta_row(_('field_exposure_time'),
+                    (photo.exposure_time ~ ' ' ~ _('unit_sec')) if photo.exposure_time else '') }}
+                {{ meta_row(_('field_iso_gain'), photo.iso_gain) }}
+                {{ meta_row(_('field_frame_count'),
+                    (photo.frame_count ~ ' ' ~ _('unit_frames')) if photo.frame_count else '') }}
+            </div>
+            {% endif %}
+
+            {% if photo.location_name or photo.bortle_scale %}
+            <div class="card rounded-2xl p-5">
+                <h3 class="text-xs font-semibold uppercase tracking-wider mb-3"
+                    style="color:#666699;">{{ _('photo_section_conditions') }}</h3>
+                {{ meta_row(_('field_location'), photo.location_name) }}
+                {{ meta_row(_('field_bortle'),
+                    (photo.bortle_scale ~ '/9') if photo.bortle_scale else '') }}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);
+            z-index:1000;cursor:zoom-out;align-items:center;justify-content:center;">
+    <img id="lightbox-img" style="max-width:95vw;max-height:95vh;object-fit:contain;">
+</div>
+{% endblock %}
+
+{% block extra_head %}
+{% if photo.ra and photo.dec %}
+<link rel="stylesheet" href="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.min.css">
+<script src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js" charset="utf-8"></script>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+{% if photo.ra and photo.dec %}
+<script>
+    A.init.then(() => {
+        A.aladin('#aladin-lite-div', {
+            survey: 'P/DSS2/color', fov: 0.5,
+            target: '{{ photo.ra }} {{ photo.dec }}',
+            showReticle: true, showZoomControl: true,
+            showLayersControl: false, showShareControl: false,
+            showFullscreenControl: false, backgroundColor: '#06061a',
+        });
+    });
+</script>
+{% endif %}
+<script>
+    async function toggleLike(photoId) {
+        {% if not current_user.is_authenticated %}
+            window.location.href = '{{ url_for("auth.login") }}';
+            return;
+        {% endif %}
+        const csrf = document.querySelector('meta[name="csrf-token"]').content;
+        const res  = await fetch(`/photo/${photoId}/like`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrf, 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        document.getElementById('likes-count').textContent = data.likes_count;
+        const btn  = document.getElementById('like-btn');
+        const icon = document.getElementById('like-icon');
+        if (data.liked) {
+            btn.style.background = 'rgba(79,142,247,0.15)';
+            btn.style.color = '#93c5fd';
+            icon.setAttribute('fill', 'currentColor');
+        } else {
+            btn.style.background = '';
+            btn.style.color = '#9999cc';
+            icon.setAttribute('fill', 'none');
+        }
+    }
+
+    function openLightbox(src) {
+        const lb = document.getElementById('lightbox');
+        document.getElementById('lightbox-img').src = src;
+        lb.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    function copyLink(event) {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            const label = document.getElementById('copy-label');
+            label.textContent = '{{ _("photo_link_copied") }}';
+            setTimeout(() => { label.textContent = '{{ _("photo_copy_link") }}'; }, 2000);
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,34 @@
+# Виртуальное окружение Python
+venv/
+.venv/
+env/
+
+# База данных SQLite (генерируется автоматически)
+*.db
+*.sqlite3
+instance/
+
+# Секретные настройки — НИКОГДА не коммить
+.env
+
+# Загруженные файлы пользователей
+uploads/*
+!uploads/.gitkeep
+
+# Скомпилированные переводы (генерируются командой pybabel compile)
+*.mo
+
+# Python кэш
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# macOS системные файлы
+.DS_Store
+.AppleDouble
+
+# IDE
+.vscode/
+.idea/
+*.swp

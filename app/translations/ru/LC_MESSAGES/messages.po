@@ -1,0 +1,833 @@
+# Русский перевод интерфейса Astroshare
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+
+# Навигация
+msgid "nav_home"
+msgstr "Главная"
+
+msgid "nav_gallery"
+msgstr "Галерея"
+
+msgid "nav_news"
+msgstr "Новости"
+
+msgid "nav_login"
+msgstr "Войти"
+
+msgid "nav_register"
+msgstr "Регистрация"
+
+msgid "nav_logout"
+msgstr "Выйти"
+
+msgid "nav_notifications"
+msgstr "Уведомления"
+
+# Главная страница
+msgid "index_hero_title"
+msgstr "Поделись своей вселенной"
+
+msgid "index_hero_subtitle"
+msgstr "Платформа для астрофотографов-любителей и школьных научных проектов. Загружай снимки, делись открытиями, изучай космос."
+
+msgid "index_cta_explore"
+msgstr "Открыть галерею"
+
+msgid "index_cta_upload"
+msgstr "Загрузить снимок"
+
+msgid "index_stat_photos"
+msgstr "Снимков"
+
+msgid "index_stat_users"
+msgstr "Пользователей"
+
+msgid "index_stat_likes"
+msgstr "Лайков"
+
+msgid "index_features_title"
+msgstr "Что умеет Astroshare"
+
+msgid "feature_gallery_title"
+msgstr "Публичная галерея"
+
+msgid "feature_gallery_desc"
+msgstr "Делись астрофотографиями с сообществом. Фильтруй по объектам, созвездиям и типам снимков."
+
+msgid "feature_platesolve_title"
+msgstr "Интеграция с телескопом"
+
+msgid "feature_platesolve_desc"
+msgstr "Автоматически загружай снимки с результатами plate solving прямо из своей системы управления телескопом."
+
+msgid "feature_news_title"
+msgstr "Новости космоса"
+
+msgid "feature_news_desc"
+msgstr "Актуальные новости от NASA и мировых космических агентств обновляются каждые 6 часов."
+
+msgid "footer_tagline"
+msgstr "Платформа для астрофотографов-любителей"
+
+# --- Авторизация ---
+
+msgid "register_title"
+msgstr "Создать аккаунт"
+
+msgid "register_subtitle"
+msgstr "Присоединяйся к сообществу астрофотографов"
+
+msgid "register_submit"
+msgstr "Зарегистрироваться"
+
+msgid "register_have_account"
+msgstr "Уже есть аккаунт?"
+
+msgid "login_title"
+msgstr "Вход"
+
+msgid "login_subtitle"
+msgstr "Рады видеть тебя снова"
+
+msgid "login_submit"
+msgstr "Войти"
+
+msgid "login_forgot"
+msgstr "Забыл пароль?"
+
+msgid "login_no_account"
+msgstr "Нет аккаунта?"
+
+msgid "forgot_title"
+msgstr "Восстановление пароля"
+
+msgid "forgot_subtitle"
+msgstr "Введи email — мы отправим ссылку для сброса пароля"
+
+msgid "forgot_submit"
+msgstr "Отправить ссылку"
+
+msgid "reset_title"
+msgstr "Новый пароль"
+
+msgid "reset_subtitle"
+msgstr "Придумай новый пароль для своего аккаунта"
+
+msgid "reset_submit"
+msgstr "Сохранить пароль"
+
+msgid "back_to_login"
+msgstr "← Вернуться к входу"
+
+# Поля форм
+msgid "field_username"
+msgstr "Имя пользователя"
+
+msgid "field_email"
+msgstr "Email"
+
+msgid "field_password"
+msgstr "Пароль"
+
+msgid "field_confirm_password"
+msgstr "Повтори пароль"
+
+msgid "field_remember_me"
+msgstr "Запомнить меня"
+
+msgid "field_bio"
+msgstr "О себе"
+
+msgid "field_telescopes"
+msgstr "Телескопы"
+
+msgid "field_location"
+msgstr "Местоположение"
+
+msgid "field_website"
+msgstr "Сайт"
+
+msgid "field_avatar"
+msgstr "Аватар"
+
+# Подсказки полей
+msgid "bio_placeholder"
+msgstr "Расскажи немного о себе и своём увлечении астрофотографией"
+
+msgid "telescopes_placeholder"
+msgstr "Например: Celestron C8, Sky-Watcher 200P"
+
+msgid "location_placeholder"
+msgstr "Город или регион"
+
+msgid "avatar_hint"
+msgstr "максимум 2 МБ"
+
+# Flash-сообщения
+msgid "flash_register_success"
+msgstr "Аккаунт создан! Проверь ссылку подтверждения в консоли сервера."
+
+msgid "flash_login_invalid"
+msgstr "Неверный email или пароль."
+
+msgid "flash_login_banned"
+msgstr "Аккаунт заблокирован. Обратись к администратору."
+
+msgid "flash_logout"
+msgstr "Ты вышел из аккаунта."
+
+msgid "flash_confirm_invalid"
+msgstr "Неверная или устаревшая ссылка подтверждения."
+
+msgid "flash_confirm_already"
+msgstr "Email уже подтверждён."
+
+msgid "flash_confirm_success"
+msgstr "Email подтверждён! Теперь можешь войти."
+
+msgid "flash_forgot_sent"
+msgstr "Если такой email зарегистрирован, ссылка для сброса пароля появится в консоли сервера."
+
+msgid "flash_reset_invalid"
+msgstr "Неверная или устаревшая ссылка сброса пароля."
+
+msgid "flash_reset_success"
+msgstr "Пароль успешно изменён. Войди с новым паролем."
+
+msgid "flash_profile_saved"
+msgstr "Профиль сохранён."
+
+# Ошибки валидации форм
+msgid "only_latin"
+msgstr "Только латинские буквы и цифры."
+
+msgid "password_too_short"
+msgstr "Пароль должен быть не короче 8 символов."
+
+msgid "passwords_mismatch"
+msgstr "Пароли не совпадают."
+
+msgid "username_taken"
+msgstr "Это имя уже занято."
+
+msgid "email_taken"
+msgstr "Этот email уже зарегистрирован."
+
+msgid "invalid_twitter"
+msgstr "Только буквы, цифры и подчёркивание."
+
+msgid "invalid_instagram"
+msgstr "Только буквы, цифры, точки и подчёркивание."
+
+msgid "images_only"
+msgstr "Разрешены только изображения JPG и PNG."
+
+# --- Профиль ---
+
+msgid "profile_edit"
+msgstr "Редактировать профиль"
+
+msgid "profile_member_since"
+msgstr "На сайте с"
+
+msgid "profile_website"
+msgstr "Сайт"
+
+msgid "profile_telescopes"
+msgstr "Телескопы"
+
+msgid "profile_stat_photos"
+msgstr "Снимков"
+
+msgid "profile_stat_likes"
+msgstr "Лайков получено"
+
+msgid "profile_stat_comments"
+msgstr "Комментариев"
+
+msgid "profile_email_not_confirmed"
+msgstr "Email не подтверждён. Проверь ссылку в консоли сервера."
+
+msgid "profile_no_photos_yet"
+msgstr "Снимков пока нет. Загрузи свою первую астрофотографию!"
+
+msgid "profile_upload_first"
+msgstr "Загрузить снимок"
+
+msgid "public_no_photos"
+msgstr "Этот пользователь ещё не загрузил снимки."
+
+msgid "edit_profile_title"
+msgstr "Редактирование профиля"
+
+msgid "edit_social_links"
+msgstr "Ссылки на соцсети"
+
+msgid "edit_save"
+msgstr "Сохранить"
+
+msgid "back_to_profile"
+msgstr "Профиль"
+
+# --- Верификация email ---
+
+msgid "verify_title"
+msgstr "Подтверди email"
+
+msgid "verify_subtitle"
+msgstr "Мы отправили 6-значный код на"
+
+msgid "verify_console_hint"
+msgstr "В режиме разработки код виден в консоли сервера (Terminal)."
+
+msgid "verify_submit"
+msgstr "Подтвердить"
+
+msgid "verify_wrong_email"
+msgstr "Неверный email?"
+
+msgid "verify_register_again"
+msgstr "Зарегистрироваться заново"
+
+msgid "flash_code_invalid"
+msgstr "Неверный код. Проверь консоль сервера и попробуй снова."
+
+msgid "flash_register_success_admin"
+msgstr "Добро пожаловать, администратор! Аккаунт создан."
+
+msgid "flash_login_not_confirmed"
+msgstr "Сначала подтверди email. Новый код отправлен в консоль."
+
+msgid "code_length"
+msgstr "Код должен состоять из 6 цифр."
+
+# --- Навигация (этап 3) ---
+
+msgid "nav_upload"
+msgstr "Загрузить"
+
+# --- Загрузка снимка ---
+
+msgid "upload_title"
+msgstr "Загрузить снимок"
+
+msgid "upload_section_file"
+msgstr "Файл"
+
+msgid "upload_section_basic"
+msgstr "Основное"
+
+msgid "upload_section_astro"
+msgstr "Астрономические данные"
+
+msgid "upload_section_tech"
+msgstr "Технические данные"
+
+msgid "upload_section_conditions"
+msgstr "Условия съёмки"
+
+msgid "upload_drop_hint"
+msgstr "Нажми или перетащи файл сюда"
+
+msgid "upload_max_size"
+msgstr "максимум 20 МБ"
+
+msgid "upload_submit"
+msgstr "Опубликовать снимок"
+
+msgid "format_not_allowed"
+msgstr "Разрешены только форматы JPG, PNG, TIFF."
+
+msgid "not_an_image"
+msgstr "Файл не является изображением или повреждён."
+
+# Поля формы загрузки
+msgid "field_title"
+msgstr "Название"
+
+msgid "field_description"
+msgstr "Описание"
+
+msgid "field_observation_date"
+msgstr "Дата наблюдения"
+
+msgid "field_is_public"
+msgstr "Публичный снимок (виден всем)"
+
+msgid "field_object_name"
+msgstr "Объект"
+
+msgid "field_object_type"
+msgstr "Тип объекта"
+
+msgid "field_constellation"
+msgstr "Созвездие"
+
+msgid "field_ra"
+msgstr "RA (прямое восхождение)"
+
+msgid "field_dec"
+msgstr "Dec (склонение)"
+
+msgid "field_telescope"
+msgstr "Телескоп"
+
+msgid "field_camera"
+msgstr "Камера"
+
+msgid "field_focal_length"
+msgstr "Фокусное расстояние (мм)"
+
+msgid "field_exposure_time"
+msgstr "Выдержка одного кадра (с)"
+
+msgid "field_iso_gain"
+msgstr "ISO / Gain"
+
+msgid "field_frame_count"
+msgstr "Количество кадров"
+
+msgid "field_bortle"
+msgstr "Шкала Бортля"
+
+msgid "field_tags"
+msgstr "Теги"
+
+msgid "title_placeholder"
+msgstr "Туманность Андромеды"
+
+msgid "description_placeholder"
+msgstr "Расскажи об условиях съёмки, оборудовании, обработке..."
+
+msgid "tags_hint"
+msgstr "Через запятую: deep-sky, туманность, M31"
+
+# Flash-сообщения снимков
+msgid "flash_photo_uploaded"
+msgstr "Снимок успешно загружен!"
+
+msgid "flash_photo_deleted"
+msgstr "Снимок удалён."
+
+# --- Страница снимка ---
+
+msgid "photo_copy_link"
+msgstr "Скопировать ссылку"
+
+msgid "photo_link_copied"
+msgstr "Скопировано!"
+
+msgid "photo_delete"
+msgstr "Удалить"
+
+msgid "photo_confirm_delete"
+msgstr "Удалить снимок? Это действие необратимо."
+
+msgid "photo_private"
+msgstr "Приватный"
+
+msgid "photo_author"
+msgstr "Автор"
+
+msgid "photo_observed"
+msgstr "Дата наблюдения"
+
+msgid "photo_uploaded"
+msgstr "Загружен"
+
+msgid "photo_sky_map"
+msgstr "Карта звёздного неба"
+
+msgid "photo_comments"
+msgstr "Комментарии"
+
+msgid "photo_no_preview"
+msgstr "Предпросмотр недоступен"
+
+msgid "photo_section_astro"
+msgstr "Астрономия"
+
+msgid "photo_section_tech"
+msgstr "Оборудование"
+
+msgid "photo_section_conditions"
+msgstr "Условия"
+
+msgid "comments_coming_soon"
+msgstr "Комментарии появятся в следующем обновлении."
+
+# Единицы измерения
+msgid "unit_mm"
+msgstr "мм"
+
+msgid "unit_sec"
+msgstr "с"
+
+msgid "unit_frames"
+msgstr "кадров"
+
+# Типы объектов (для отображения в метаданных)
+msgid "galaxy"
+msgstr "Галактика"
+
+msgid "nebula"
+msgstr "Туманность"
+
+msgid "planet"
+msgstr "Планета"
+
+msgid "star_cluster"
+msgstr "Звёздное скопление"
+
+msgid "solar"
+msgstr "Объект Солнечной системы"
+
+msgid "double_star"
+msgstr "Двойная звезда"
+
+msgid "other"
+msgstr "Другое"
+
+# --- Личная галерея ---
+
+msgid "my_photos_title"
+msgstr "Мои снимки"
+
+msgid "my_photos_empty"
+msgstr "Снимков пока нет"
+
+msgid "my_photos_empty_hint"
+msgstr "Загрузи свою первую астрофотографию и поделись ею с сообществом."
+
+msgid "pagination_prev"
+msgstr "Назад"
+
+msgid "pagination_next"
+msgstr "Вперёд"
+
+# --- Лента ---
+
+msgid "feed_title"
+msgstr "Лента"
+
+msgid "feed_subtitle"
+msgstr "Снимки и обсуждения от сообщества астрофотографов"
+
+msgid "feed_empty_title"
+msgstr "Лента пуста"
+
+msgid "feed_empty_hint"
+msgstr "Стань первым — загрузи снимок или задай вопрос!"
+
+msgid "card_photo"
+msgstr "Снимок"
+
+# --- Посты ---
+
+msgid "nav_ask"
+msgstr "Задать вопрос"
+
+msgid "post_type_question"
+msgstr "Вопрос"
+
+msgid "post_type_tip"
+msgstr "Совет"
+
+msgid "post_create_title"
+msgstr "Новый пост"
+
+msgid "field_content"
+msgstr "Текст"
+
+msgid "post_title_placeholder"
+msgstr "Кратко опиши тему"
+
+msgid "post_content_placeholder"
+msgstr "Подробнее..."
+
+msgid "post_submit"
+msgstr "Опубликовать"
+
+msgid "post_confirm_delete"
+msgstr "Удалить пост? Это действие необратимо."
+
+msgid "flash_post_created"
+msgstr "Пост опубликован!"
+
+msgid "flash_post_deleted"
+msgstr "Пост удалён."
+
+# --- Комментарии ---
+
+msgid "flash_comment_added"
+msgstr "Комментарий добавлен."
+
+msgid "comment_placeholder"
+msgstr "Напиши комментарий..."
+
+msgid "comment_submit"
+msgstr "Отправить"
+
+msgid "comment_login_required"
+msgstr "чтобы оставить комментарий."
+
+# --- Галерея ---
+
+msgid "sort_new"
+msgstr "Новые"
+
+msgid "sort_popular"
+msgstr "Популярные"
+
+msgid "filter_all"
+msgstr "Все"
+
+msgid "gallery_empty"
+msgstr "Снимков пока нет"
+
+# --- Профиль (дополнительно) ---
+
+msgid "profile_all_photos"
+msgstr "Все снимки"
+
+# --- Новости ---
+
+msgid "nav_news"
+msgstr "Новости"
+
+msgid "news_title"
+msgstr "Новости космоса"
+
+msgid "news_subtitle"
+msgstr "Актуальные события из мира астрономии и космонавтики"
+
+msgid "news_empty"
+msgstr "Новостей пока нет"
+
+msgid "news_read_more"
+msgstr "Читать статью"
+
+msgid "news_source_unknown"
+msgstr "Неизвестный источник"
+
+msgid "news_api_error"
+msgstr "Не удалось загрузить новости"
+
+msgid "news_api_error_hint"
+msgstr "Проверь подключение к интернету и обнови страницу."
+
+# --- Идентификация объектов ---
+
+msgid "nav_identify"
+msgstr "Объекты"
+
+msgid "identify_title"
+msgstr "Идентификация объектов"
+
+msgid "identify_subtitle"
+msgstr "Введи название или обозначение объекта — получи координаты, тип и карту неба"
+
+msgid "identify_placeholder"
+msgstr "M31, NGC 1952, Betelgeuse, Andromeda..."
+
+msgid "identify_search"
+msgstr "Найти"
+
+msgid "identify_examples_title"
+msgstr "Примеры объектов"
+
+msgid "identify_hint"
+msgstr "Используй стандартные каталожные обозначения: Messier (M31), NGC (NGC 1952), имена звёзд (Betelgeuse)."
+
+msgid "identify_not_found"
+msgstr "Объект не найден в базе SIMBAD."
+
+msgid "identify_not_found_hint"
+msgstr "Попробуй стандартное обозначение: M 31, NGC 1952, Alpha Cen A"
+
+msgid "identify_sky_map"
+msgstr "Карта звёздного неба"
+
+msgid "identify_simbad_link"
+msgstr "Открыть в SIMBAD"
+
+# --- Каталог ---
+
+msgid "nav_catalog"
+msgstr "Каталог"
+
+msgid "catalog_title"
+msgstr "Каталог объектов"
+
+msgid "catalog_subtitle"
+msgstr "Звёзды, туманности, галактики и тела Солнечной системы с расстояниями"
+
+msgid "catalog_found"
+msgstr "Найдено"
+
+msgid "catalog_search_placeholder"
+msgstr "Поиск по названию, созвездию, каталожному ID..."
+
+msgid "catalog_sort_name"
+msgstr "По названию"
+
+msgid "catalog_sort_distance"
+msgstr "По расстоянию"
+
+msgid "catalog_sort_magnitude"
+msgstr "По яркости"
+
+msgid "catalog_reset"
+msgstr "Сбросить фильтры"
+
+msgid "catalog_col_object"
+msgstr "Объект"
+
+msgid "catalog_col_type"
+msgstr "Тип"
+
+msgid "catalog_col_constellation"
+msgstr "Созвездие"
+
+msgid "catalog_col_distance"
+msgstr "Расстояние"
+
+msgid "catalog_col_magnitude"
+msgstr "Зв. величина"
+
+msgid "catalog_details"
+msgstr "Подробнее"
+
+msgid "catalog_nothing_found"
+msgstr "Ничего не найдено"
+
+msgid "catalog_section_data"
+msgstr "Данные"
+
+msgid "catalog_back"
+msgstr "Вернуться к каталогу"
+
+# --- Личные сообщения ---
+
+msgid "nav_messages"
+msgstr "Сообщения"
+
+msgid "msg_inbox"
+msgstr "Входящие"
+
+msgid "msg_sent"
+msgstr "Отправленные"
+
+msgid "msg_compose"
+msgstr "Написать"
+
+msgid "msg_to"
+msgstr "Кому"
+
+msgid "msg_from"
+msgstr "От"
+
+msgid "msg_subject"
+msgstr "Тема"
+
+msgid "msg_body"
+msgstr "Текст"
+
+msgid "msg_reply"
+msgstr "Ответить"
+
+msgid "msg_send_btn"
+msgstr "Отправить"
+
+msgid "msg_delete"
+msgstr "Удалить сообщение"
+
+msgid "msg_confirm_delete"
+msgstr "Удалить это сообщение?"
+
+msgid "msg_recipient_placeholder"
+msgstr "Имя пользователя"
+
+msgid "msg_subject_placeholder"
+msgstr "Тема сообщения"
+
+msgid "msg_body_placeholder"
+msgstr "Текст сообщения..."
+
+msgid "msg_empty_inbox"
+msgstr "Входящих сообщений нет"
+
+msgid "msg_empty_sent"
+msgstr "Отправленных сообщений нет"
+
+msgid "msg_sent"
+msgstr "Отправленные"
+
+msgid "msg_user_not_found"
+msgstr "Пользователь не найден."
+
+msgid "msg_self_send"
+msgstr "Нельзя отправить сообщение самому себе."
+
+msgid "msg_sent_ok"
+msgstr "Сообщение отправлено!"
+
+msgid "msg_deleted"
+msgstr "Сообщение удалено."
+
+# --- Друзья ---
+
+msgid "friends_title"
+msgstr "Друзья"
+
+msgid "friends_empty"
+msgstr "Друзей пока нет"
+
+msgid "friends_empty_hint"
+msgstr "Найдите пользователей в галерее и добавьте их в друзья."
+
+msgid "friends_pending_title"
+msgstr "Запросы в друзья"
+
+msgid "profile_stat_friends"
+msgstr "Друзья"
+
+msgid "friend_add"
+msgstr "Добавить в друзья"
+
+msgid "friend_remove"
+msgstr "Удалить из друзей"
+
+msgid "friend_confirm_remove"
+msgstr "Убрать этого пользователя из друзей?"
+
+msgid "friend_pending_sent"
+msgstr "Запрос отправлен"
+
+msgid "friend_accept"
+msgstr "Принять"
+
+msgid "friend_decline"
+msgstr "Отклонить"
+
+msgid "friend_request_sent"
+msgstr "Запрос дружбы отправлен!"
+
+msgid "friend_request_accepted"
+msgstr "Запрос принят! Теперь вы друзья."
+
+msgid "friend_request_declined"
+msgstr "Запрос отклонён."
+
+msgid "friend_removed"
+msgstr "Пользователь удалён из друзей."
+
+msgid "friend_self"
+msgstr "Нельзя добавить самого себя в друзья."
+
+msgid "friend_already"
+msgstr "Вы уже друзья."

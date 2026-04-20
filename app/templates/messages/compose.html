@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+
+{% block title %}{{ _('msg_compose') }} — Astroshare{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-10">
+
+    <div class="flex items-center gap-4 mb-8">
+        <a href="{{ url_for('messages.inbox') }}"
+           class="text-sm hover:text-white" style="color:#9999cc;">
+            &larr; {{ _('msg_inbox') }}
+        </a>
+    </div>
+
+    <h1 class="text-2xl font-bold text-white mb-6">{{ _('msg_compose') }}</h1>
+
+    <div class="card rounded-2xl p-7">
+        <form method="POST" novalidate>
+            {{ form.hidden_tag() }}
+
+            <div class="mb-4">
+                <label class="block text-xs font-medium mb-1.5" style="color:#9999cc;">
+                    {{ _('msg_to') }}
+                </label>
+                {{ form.recipient(
+                    class="w-full rounded-xl px-4 py-3 text-sm",
+                    style="background:rgba(13,13,46,0.9);border:1px solid rgba(79,142,247,0.25);color:#e8e8ff;outline:none;",
+                    placeholder=_('msg_recipient_placeholder'),
+                    onfocus="this.style.borderColor='rgba(79,142,247,0.6)'",
+                    onblur="this.style.borderColor='rgba(79,142,247,0.25)'"
+                ) }}
+                {% for error in form.recipient.errors %}
+                <p class="text-xs mt-1" style="color:#f87171;">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-medium mb-1.5" style="color:#9999cc;">
+                    {{ _('msg_subject') }}
+                </label>
+                {{ form.subject(
+                    class="w-full rounded-xl px-4 py-3 text-sm",
+                    style="background:rgba(13,13,46,0.9);border:1px solid rgba(79,142,247,0.25);color:#e8e8ff;outline:none;",
+                    placeholder=_('msg_subject_placeholder'),
+                    onfocus="this.style.borderColor='rgba(79,142,247,0.6)'",
+                    onblur="this.style.borderColor='rgba(79,142,247,0.25)'"
+                ) }}
+                {% for error in form.subject.errors %}
+                <p class="text-xs mt-1" style="color:#f87171;">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="mb-5">
+                <label class="block text-xs font-medium mb-1.5" style="color:#9999cc;">
+                    {{ _('msg_body') }}
+                </label>
+                {{ form.body(
+                    rows=7,
+                    class="w-full rounded-xl px-4 py-3 text-sm resize-none",
+                    style="background:rgba(13,13,46,0.9);border:1px solid rgba(79,142,247,0.25);color:#e8e8ff;outline:none;",
+                    placeholder=_('msg_body_placeholder'),
+                    onfocus="this.style.borderColor='rgba(79,142,247,0.6)'",
+                    onblur="this.style.borderColor='rgba(79,142,247,0.25)'"
+                ) }}
+                {% for error in form.body.errors %}
+                <p class="text-xs mt-1" style="color:#f87171;">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <button type="submit"
+                    class="btn-primary w-full py-3 rounded-xl font-semibold text-sm">
+                {{ _('msg_send_btn') }}
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

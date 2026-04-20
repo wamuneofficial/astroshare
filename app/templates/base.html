@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Astroshare{% endblock %}</title>
+
+    <!-- Tailwind CSS через CDN — не требует сборки -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Настройка цветовой палитры Tailwind для тёмной астрономической темы -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        space: {
+                            950: '#03030f',
+                            900: '#06061a',
+                            800: '#0d0d2e',
+                            700: '#141442',
+                            600: '#1e1e5c',
+                        },
+                        star: {
+                            DEFAULT: '#e8e8ff',
+                            dim: '#9999cc',
+                        },
+                        nebula: {
+                            blue:   '#4f8ef7',
+                            purple: '#9f7aea',
+                            cyan:   '#22d3ee',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Подключаем шрифт Inter для чистого вида текста -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Базовые стили страницы с тонкими туманностями */
+        body {
+            background-color: #04041a;
+            background-image:
+                radial-gradient(ellipse at 18% 55%, rgba(88,30,160,0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 82% 18%, rgba(20,50,130,0.09) 0%, transparent 50%),
+                radial-gradient(ellipse at 55% 88%, rgba(15,30,90,0.08) 0%, transparent 45%),
+                radial-gradient(ellipse at 70% 42%, rgba(50,20,100,0.05) 0%, transparent 40%);
+            color: #e8e8ff;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        /* Canvas со звёздным полем (z-index 0, под контентом) */
+        #stars-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Весь контент поверх звёздного фона */
+        .content-layer {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Стиль карточки */
+        .card {
+            background: rgba(13, 13, 46, 0.8);
+            border: 1px solid rgba(79, 142, 247, 0.15);
+            backdrop-filter: blur(8px);
+        }
+
+        /* Стиль навигационной ссылки */
+        .nav-link {
+            color: #9999cc;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: #e8e8ff; }
+        .nav-link.active { color: #4f8ef7; }
+
+        /* Кнопка-акцент */
+        .btn-primary {
+            background: linear-gradient(135deg, #4f8ef7, #9f7aea);
+            color: white;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Вторичная кнопка */
+        .btn-secondary {
+            border: 1px solid rgba(79, 142, 247, 0.4);
+            color: #4f8ef7;
+            transition: background 0.2s;
+        }
+        .btn-secondary:hover { background: rgba(79, 142, 247, 0.1); }
+
+        /* Flash-сообщения */
+        .alert-success { background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.3); color: #86efac; }
+        .alert-danger   { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5; }
+        .alert-warning  { background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.3); color: #fde047; }
+        .alert-info     { background: rgba(79, 142, 247, 0.15); border-color: rgba(79, 142, 247, 0.3); color: #93c5fd; }
+    </style>
+
+    <!-- CSRF-токен для AJAX-запросов (лайки и др.) -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+<canvas id="stars-canvas"></canvas>
+<div class="content-layer min-h-screen flex flex-col">
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <nav class="border-b border-blue-900/30" style="background: rgba(6,6,26,0.95); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+
+                <!-- Логотип -->
+                <a href="{{ url_for('main.index') }}" class="flex items-center gap-2">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <circle cx="14" cy="14" r="13" stroke="#4f8ef7" stroke-width="1.5"/>
+                        <circle cx="14" cy="14" r="5" fill="#4f8ef7" opacity="0.8"/>
+                        <circle cx="6"  cy="8"  r="1.5" fill="#9f7aea"/>
+                        <circle cx="22" cy="20" r="1"   fill="#22d3ee"/>
+                        <circle cx="20" cy="6"  r="1"   fill="#e8e8ff" opacity="0.7"/>
+                    </svg>
+                    <span class="text-lg font-semibold text-white tracking-wide">Astroshare</span>
+                </a>
+
+                <!-- Центральные ссылки -->
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="{{ url_for('main.index') }}" class="nav-link text-sm font-medium">
+                        {{ _('nav_home') }}
+                    </a>
+                    <a href="{{ url_for('gallery.gallery_view') }}" class="nav-link text-sm font-medium">{{ _('nav_gallery') }}</a>
+                    <a href="{{ url_for('catalog.catalog_view') }}" class="nav-link text-sm font-medium">{{ _('nav_catalog') }}</a>
+                    <a href="{{ url_for('news.news_view') }}" class="nav-link text-sm font-medium">{{ _('nav_news') }}</a>
+                    <a href="{{ url_for('identify.identify_view') }}" class="nav-link text-sm font-medium">{{ _('nav_identify') }}</a>
+                </div>
+
+                <!-- Правая часть: переключатель языка + авторизация -->
+                <div class="flex items-center gap-3">
+
+                    <!-- Переключатель языка -->
+                    <div class="flex items-center gap-1 text-xs">
+                        <a href="{{ url_for('main.set_language', lang='ru') }}"
+                           class="px-2 py-1 rounded transition-colors
+                                  {% if get_locale() == 'ru' %}bg-blue-800/50 text-blue-300{% else %}text-star-dim hover:text-star{% endif %}">
+                            RU
+                        </a>
+                        <span class="text-space-600">/</span>
+                        <a href="{{ url_for('main.set_language', lang='en') }}"
+                           class="px-2 py-1 rounded transition-colors
+                                  {% if get_locale() == 'en' %}bg-blue-800/50 text-blue-300{% else %}text-star-dim hover:text-star{% endif %}">
+                            EN
+                        </a>
+                    </div>
+
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('photos.upload') }}" class="nav-link text-sm font-medium">
+                            {{ _('nav_upload') }}
+                        </a>
+                        <!-- Личные сообщения с бейджем -->
+                        <a href="{{ url_for('messages.inbox') }}"
+                           class="nav-link text-sm font-medium relative flex items-center gap-1">
+                            {{ _('nav_messages') }}
+                            {% if unread_count > 0 %}
+                            <span class="text-xs px-1.5 py-0.5 rounded-full font-bold"
+                                  style="background:#4f8ef7;color:#fff;font-size:10px;line-height:1;">
+                                {{ unread_count }}
+                            </span>
+                            {% endif %}
+                        </a>
+                        <a href="{{ url_for('profile.my_profile') }}" class="nav-link text-sm font-medium">
+                            {{ current_user.username }}
+                        </a>
+                        <a href="{{ url_for('auth.logout') }}"
+                           class="btn-secondary text-xs px-3 py-1.5 rounded-lg font-medium">
+                            {{ _('nav_logout') }}
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="nav-link text-sm font-medium">
+                            {{ _('nav_login') }}
+                        </a>
+                        <a href="{{ url_for('auth.register') }}"
+                           class="btn-primary text-sm px-4 py-1.5 rounded-lg font-medium">
+                            {{ _('nav_register') }}
+                        </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== FLASH-СООБЩЕНИЯ ===== -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="max-w-7xl mx-auto w-full px-4 pt-4">
+            {% for category, message in messages %}
+            <div class="alert-{{ category }} border rounded-lg px-4 py-3 mb-2 text-sm flex justify-between items-center">
+                <span>{{ message }}</span>
+                <!-- Кнопка закрытия flash-сообщения -->
+                <button onclick="this.parentElement.remove()" class="ml-4 opacity-60 hover:opacity-100 text-lg leading-none">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+    <!-- Дочерние шаблоны заполняют блок "content" -->
+    <main class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+</div>
+
+{% block extra_scripts %}{% endblock %}
+
+<script>
+(function () {
+    var canvas = document.getElementById('stars-canvas');
+    var ctx    = canvas.getContext('2d');
+
+    function draw() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        var W = canvas.width, H = canvas.height;
+        var density = Math.floor(W * H / 2800);
+
+        /* Крошечные тусклые звёзды (60%) */
+        for (var i = 0; i < density * 0.6; i++) {
+            var x = Math.random() * W, y = Math.random() * H;
+            ctx.beginPath();
+            ctx.arc(x, y, Math.random() * 0.55 + 0.15, 0, 6.283);
+            ctx.fillStyle = 'rgba(190,205,255,' + (Math.random() * 0.28 + 0.07).toFixed(2) + ')';
+            ctx.fill();
+        }
+
+        /* Средние звёзды (35%) */
+        for (var j = 0; j < density * 0.35; j++) {
+            var x2 = Math.random() * W, y2 = Math.random() * H;
+            ctx.beginPath();
+            ctx.arc(x2, y2, Math.random() * 0.9 + 0.4, 0, 6.283);
+            ctx.fillStyle = 'rgba(215,225,255,' + (Math.random() * 0.45 + 0.15).toFixed(2) + ')';
+            ctx.fill();
+        }
+
+        /* Яркие звёзды с ореолом (5%) */
+        var bright = Math.max(6, Math.floor(density * 0.05));
+        for (var k = 0; k < bright; k++) {
+            var bx = Math.random() * W, by = Math.random() * H;
+            var br = Math.random() * 1.1 + 0.9;
+
+            var grd = ctx.createRadialGradient(bx, by, 0, bx, by, br * 6);
+            grd.addColorStop(0, 'rgba(170,195,255,0.22)');
+            grd.addColorStop(1, 'rgba(170,195,255,0)');
+            ctx.beginPath();
+            ctx.arc(bx, by, br * 6, 0, 6.283);
+            ctx.fillStyle = grd;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(bx, by, br, 0, 6.283);
+            ctx.fillStyle = 'rgba(255,255,255,0.92)';
+            ctx.fill();
+        }
+    }
+
+    draw();
+    window.addEventListener('resize', draw);
+}());
+</script>
+</body>
+</html>
