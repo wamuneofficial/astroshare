@@ -77,21 +77,32 @@
         .nav-link:hover { color: #e8f0ff; }
         .nav-link.active { color: #00c8a0; }
 
-        /* ── Основная кнопка: тeal → синий ── */
+        /* ── Основная кнопка — матовое стекло с бирюзовой каймой ── */
         .btn-primary {
-            background: linear-gradient(135deg, #00c8a0, #4f8ef7);
-            color: #fff;
-            transition: opacity 0.2s, transform 0.1s;
+            background: rgba(0, 180, 140, 0.08);
+            border: 1px solid rgba(0, 200, 160, 0.28);
+            color: #7fe8d0;
+            transition: background 0.25s, border-color 0.25s, box-shadow 0.25s, color 0.2s;
         }
-        .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+        .btn-primary:hover {
+            background: rgba(0, 200, 160, 0.14);
+            border-color: rgba(0, 200, 160, 0.5);
+            color: #b8fff0;
+            box-shadow: 0 0 14px rgba(0, 200, 160, 0.12);
+        }
 
-        /* ── Вторичная кнопка ── */
+        /* ── Вторичная кнопка — ещё тише ── */
         .btn-secondary {
-            border: 1px solid rgba(0, 200, 160, 0.3);
-            color: #00c8a0;
-            transition: background 0.2s;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #7a8ca8;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
         }
-        .btn-secondary:hover { background: rgba(0, 200, 160, 0.1); }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #c8d8f0;
+        }
 
         /* ── Flash ── */
         .alert-success { background: rgba(0, 200, 130, 0.12); border-color: rgba(0,200,130,0.28); color: #6effd8; }

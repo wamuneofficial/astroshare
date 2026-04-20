@@ -1,7 +1,7 @@
 import os
 from flask import Flask, session, request
 from .config import config
-from .extensions import db, migrate, login_manager, csrf, babel
+from .extensions import db, migrate, login_manager, csrf, babel, mail
 
 
 def get_locale():
@@ -36,6 +36,7 @@ def create_app(config_name=None):
     login_manager.init_app(app)
     csrf.init_app(app)
     babel.init_app(app, locale_selector=get_locale)
+    mail.init_app(app)
 
     # Если пользователь попытается зайти на закрытую страницу без авторизации,
     # Flask-Login перенаправит его сюда. 'auth.login' — это имя маршрута,

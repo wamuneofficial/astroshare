@@ -8,6 +8,7 @@ from .forms import (RegistrationForm, LoginForm, ForgotPasswordForm,
                     ResetPasswordForm, VerifyEmailForm)
 from ..extensions import db
 from ..models import User
+from ..utils.email import send_confirmation_email, send_reset_email
 
 
 @auth.route('/register', methods=['GET', 'POST'])
@@ -38,16 +39,10 @@ def register():
         db.session.commit()
 
         if not user.email_confirmed:
-            # Сохраняем email в сессии — нужен на странице верификации
             session['pending_verify_email'] = user.email
-
-            # В продакшене здесь будет отправка настоящего письма.
-            # Сейчас выводим код в консоль.
-            print(f'\n{"="*50}')
-            print(f'КОД ПОДТВЕРЖДЕНИЯ для {user.email}')
-            print(f'Введи на сайте: {code}')
-            print(f'{"="*50}\n')
-
+            # Отправляем настоящее письмо (или выводим в консоль если MAIL не настроен)
+            send_confirmation_email(user.email, user.username, code)
+            flash(_('flash_confirm_sent'), 'info')
             return redirect(url_for('auth.verify_email'))
 
         flash(_('flash_register_success_admin'), 'success')
@@ -61,7 +56,6 @@ def verify_email():
     """Страница ввода 6-значного кода подтверждения email."""
     email = session.get('pending_verify_email')
 
-    # Если в сессии нет email — значит пользователь попал сюда случайно
     if not email:
         return redirect(url_for('auth.login'))
 
@@ -76,7 +70,7 @@ def verify_email():
 
         if entered_code == user.email_confirm_token:
             user.email_confirmed = True
-            user.email_confirm_token = ''  # код одноразовый
+            user.email_confirm_token = ''
             db.session.commit()
             session.pop('pending_verify_email', None)
             flash(_('flash_confirm_success'), 'success')
@@ -85,6 +79,24 @@ def verify_email():
             flash(_('flash_code_invalid'), 'danger')
 
     return render_template('auth/verify_email.html', form=form, email=email)
+
+
+@auth.route('/verify-email/resend', methods=['POST'])
+def resend_code():
+    """Повторная отправка кода подтверждения."""
+    email = session.get('pending_verify_email')
+    if not email:
+        return redirect(url_for('auth.login'))
+
+    user = User.query.filter_by(email=email).first()
+    if user and not user.email_confirmed:
+        code = str(random.randint(100000, 999999))
+        user.email_confirm_token = code
+        db.session.commit()
+        send_confirmation_email(user.email, user.username, code)
+        flash('Код отправлен повторно.', 'info')
+
+    return redirect(url_for('auth.verify_email'))
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -106,16 +118,11 @@ def login():
             return redirect(url_for('auth.login'))
 
         if not user.email_confirmed:
-            # Отправляем на верификацию если email не подтверждён
             session['pending_verify_email'] = user.email
-            # Генерируем новый код
             code = str(random.randint(100000, 999999))
             user.email_confirm_token = code
             db.session.commit()
-            print(f'\n{"="*50}')
-            print(f'КОД ПОДТВЕРЖДЕНИЯ для {user.email}')
-            print(f'Введи на сайте: {code}')
-            print(f'{"="*50}\n')
+            send_confirmation_email(user.email, user.username, code)
             flash(_('flash_login_not_confirmed'), 'warning')
             return redirect(url_for('auth.verify_email'))
 
@@ -148,7 +155,6 @@ def forgot_password():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower()).first()
 
-        # Одинаковое сообщение в обоих случаях — не раскрываем наличие email в БД
         if user:
             user.password_reset_token = secrets.token_urlsafe(32)
             db.session.commit()
@@ -157,10 +163,7 @@ def forgot_password():
                 token=user.password_reset_token,
                 _external=True
             )
-            print(f'\n{"="*50}')
-            print(f'СБРОС ПАРОЛЯ для {user.email}')
-            print(f'Перейди по ссылке: {reset_url}')
-            print(f'{"="*50}\n')
+            send_reset_email(user.email, user.username, reset_url)
 
         flash(_('flash_forgot_sent'), 'info')
         return redirect(url_for('auth.login'))

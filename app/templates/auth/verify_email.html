@@ -25,7 +25,7 @@
                 {{ _('verify_subtitle') }}
                 <span class="text-blue-400 font-medium">{{ email }}</span>
             </p>
-            <p style="color: #666699;" class="text-xs mt-2">{{ _('verify_console_hint') }}</p>
+            <p style="color: #666699;" class="text-xs mt-2">Письмо с кодом отправлено на указанный адрес. Проверь папку «Спам» если не пришло.</p>
         </div>
 
         <div class="card rounded-2xl p-8">
@@ -66,10 +66,22 @@
             </form>
         </div>
 
-        <p class="text-center mt-6 text-sm" style="color: #9999cc;">
+        <!-- Повторная отправка кода -->
+        <div class="text-center mt-4">
+            <form method="POST" action="{{ url_for('auth.resend_code') }}" class="inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit"
+                        class="text-sm underline-offset-2 hover:underline transition-colors"
+                        style="color:#7a8ca8;background:none;border:none;cursor:pointer;">
+                    Не пришло письмо? Отправить повторно
+                </button>
+            </form>
+        </div>
+
+        <p class="text-center mt-4 text-sm" style="color: #9999cc;">
             {{ _('verify_wrong_email') }}
             <a href="{{ url_for('auth.register') }}"
-               class="text-blue-400 hover:text-blue-300 font-medium">
+               class="font-medium hover:text-blue-300 transition-colors" style="color:#4f8ef7;">
                 {{ _('verify_register_again') }}
             </a>
         </p>

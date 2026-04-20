@@ -11,6 +11,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from flask_babel import Babel
+from flask_mail import Mail
 
 # ORM для работы с базой данных через Python-объекты вместо SQL-запросов
 db = SQLAlchemy()
@@ -26,3 +27,6 @@ csrf = CSRFProtect()
 
 # Поддержка нескольких языков интерфейса
 babel = Babel()
+
+# Отправка email-сообщений (подтверждение, сброс пароля)
+mail = Mail()
