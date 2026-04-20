@@ -1,1 +1,1 @@
-web: pybabel compile -d app/translations && flask db stamp base && flask db upgrade && gunicorn run:app
+web: pybabel compile -d app/translations && python -c "from app import create_app; from app.extensions import db; app=create_app(); ctx=app.app_context(); ctx.push(); db.create_all(); print('Tables OK')" && flask db stamp head && gunicorn run:app
