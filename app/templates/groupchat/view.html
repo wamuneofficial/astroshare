@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}{{ chat.name }} — Astroshare{% endblock %}
+
+{% block extra_head %}
+<style>
+    .msg-bubble { max-width: 72%; }
+    .chat-area  { height: calc(100vh - 300px); min-height: 300px; overflow-y: auto; }
+    .chat-area::-webkit-scrollbar { width: 4px; }
+    .chat-area::-webkit-scrollbar-track { background: transparent; }
+    .chat-area::-webkit-scrollbar-thumb { background: rgba(79,142,247,0.3); border-radius: 4px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-6">
+
+    <!-- Заголовок -->
+    <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+            <a href="{{ url_for('groupchat.list_view') }}"
+               class="text-sm" style="color:#4f8ef7;">← Чаты</a>
+            <span style="color:#333366;">|</span>
+            <h1 class="text-lg font-bold text-white">{{ chat.name }}</h1>
+            {% if chat.description %}
+            <span class="text-sm hidden sm:inline" style="color:#9999cc;">— {{ chat.description }}</span>
+            {% endif %}
+        </div>
+        <div class="flex gap-2">
+            {% if membership.is_admin or chat.creator_id == current_user.id %}
+            <button onclick="document.getElementById('add-member-panel').classList.toggle('hidden')"
+                    class="btn-secondary text-xs px-3 py-1.5 rounded-lg">+ Участник</button>
+            {% endif %}
+            <form method="POST" action="{{ url_for('groupchat.leave', chat_id=chat.id) }}"
+                  onsubmit="return confirm('Покинуть чат?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit"
+                        class="text-xs px-3 py-1.5 rounded-lg transition-colors"
+                        style="border:1px solid rgba(239,68,68,0.25);color:#fca5a5;">
+                    Выйти
+                </button>
+            </form>
+            {% if chat.creator_id == current_user.id or current_user.is_admin %}
+            <form method="POST" action="{{ url_for('groupchat.delete', chat_id=chat.id) }}"
+                  onsubmit="return confirm('Удалить чат?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit"
+                        class="text-xs px-3 py-1.5 rounded-lg"
+                        style="border:1px solid rgba(239,68,68,0.25);color:#fca5a5;">
+                    Удалить
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Панель добавления участника (скрыта по умолчанию) -->
+    <div id="add-member-panel" class="hidden card rounded-xl p-4 mb-4">
+        <form method="POST" action="{{ url_for('groupchat.add_member', chat_id=chat.id) }}"
+              class="flex gap-2 items-center">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="text" name="username" placeholder="Имя пользователя" required
+                   class="flex-1 rounded-xl px-3 py-2 text-sm text-white outline-none"
+                   style="background:rgba(255,255,255,0.05);border:1px solid rgba(79,142,247,0.2);">
+            <button type="submit" class="btn-primary text-xs px-4 py-2 rounded-xl">Добавить</button>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+
+        <!-- Область сообщений -->
+        <div class="lg:col-span-3">
+            <div class="card rounded-2xl flex flex-col" style="height:calc(100vh - 260px);min-height:400px;">
+
+                <!-- Сообщения -->
+                <div id="chat-area" class="flex-1 p-4 overflow-y-auto space-y-3
+                     [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded
+                     [&::-webkit-scrollbar-thumb]:bg-blue-900/40">
+                    {% if not messages %}
+                    <div class="flex items-center justify-center h-full">
+                        <p class="text-sm" style="color:#666699;">Сообщений пока нет. Напишите первым!</p>
+                    </div>
+                    {% endif %}
+                    {% for msg in messages %}
+                    {% set is_mine = msg.sender_id == current_user.id %}
+                    <div class="flex {% if is_mine %}justify-end{% else %}justify-start{% endif %} gap-2">
+                        {% if not is_mine %}
+                        <div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold"
+                             style="background:rgba(79,142,247,0.2);color:#4f8ef7;margin-top:2px;">
+                            {{ msg.sender.username[0].upper() }}
+                        </div>
+                        {% endif %}
+                        <div class="msg-bubble">
+                            {% if not is_mine %}
+                            <p class="text-xs font-medium mb-1" style="color:#4f8ef7;">{{ msg.sender.username }}</p>
+                            {% endif %}
+                            <div class="rounded-2xl px-4 py-2.5 text-sm"
+                                 style="{% if is_mine %}background:rgba(79,142,247,0.22);color:#e8e8ff;border-radius:18px 4px 18px 18px;{% else %}background:rgba(255,255,255,0.05);color:#c8c8e8;border:1px solid rgba(79,142,247,0.1);border-radius:4px 18px 18px 18px;{% endif %}">
+                                {{ msg.text }}
+                            </div>
+                            <p class="text-xs mt-1 {% if is_mine %}text-right{% endif %}" style="color:#555577;">
+                                {{ msg.created_at.strftime('%H:%M') }}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div id="bottom"></div>
+                </div>
+
+                <!-- Ввод сообщения -->
+                <div class="border-t p-3" style="border-color:rgba(79,142,247,0.1);">
+                    <form method="POST" action="{{ url_for('groupchat.send', chat_id=chat.id) }}"
+                          class="flex gap-2" id="send-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="text" name="text" id="msg-input"
+                               placeholder="Написать сообщение…" required autocomplete="off"
+                               class="flex-1 rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                               style="background:rgba(255,255,255,0.05);border:1px solid rgba(79,142,247,0.2);">
+                        <button type="submit"
+                                class="btn-primary text-sm px-5 py-2.5 rounded-xl font-medium flex-shrink-0">
+                            Отправить
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Список участников -->
+        <div class="lg:col-span-1">
+            <div class="card rounded-2xl p-4">
+                <h3 class="text-sm font-semibold mb-3" style="color:#9999cc;">
+                    Участники ({{ members|length }})
+                </h3>
+                <div class="space-y-2">
+                    {% for m in members %}
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold"
+                             style="background:rgba(79,142,247,0.15);color:#4f8ef7;">
+                            {{ m.user.username[0].upper() }}
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-xs font-medium text-white truncate">{{ m.user.username }}</p>
+                            {% if m.is_admin %}
+                            <p class="text-xs" style="color:#f0a500;">админ</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% block extra_scripts %}
+<script>
+    // Прокрутка вниз при загрузке
+    var chatArea = document.getElementById('chat-area');
+    if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
+
+    // Enter для отправки
+    document.getElementById('msg-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            document.getElementById('send-form').submit();
+        }
+    });
+
+    // Авто-обновление каждые 8 секунд
+    setTimeout(function() { location.reload(); }, 8000);
+</script>
+{% endblock %}
+
+{% endblock %}

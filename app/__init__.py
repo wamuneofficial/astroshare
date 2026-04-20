@@ -49,7 +49,7 @@ def create_app(config_name=None):
     # Импортируем модели ВНУТРИ фабрики — это критически важно!
     # Flask-Migrate должен "видеть" все классы моделей, чтобы генерировать миграции.
     # Импорт здесь гарантирует, что модели зарегистрированы в нужный момент.
-    from .models import User, Photo, Comment, News, Like, Notification, Post, Message, Friendship  # noqa: F401
+    from .models import User, Photo, Comment, News, Like, Notification, Post, Message, Friendship, Material, GroupChat, GroupChatMember, GroupChatMessage  # noqa: F401
 
     # Регистрируем blueprints
     from .main import main as main_blueprint
@@ -81,6 +81,12 @@ def create_app(config_name=None):
 
     from .messages import messages as messages_blueprint
     app.register_blueprint(messages_blueprint)
+
+    from .materials import materials as materials_blueprint
+    app.register_blueprint(materials_blueprint)
+
+    from .groupchat import groupchat as groupchat_blueprint
+    app.register_blueprint(groupchat_blueprint)
 
     # Делаем функцию get_locale доступной во всех Jinja2-шаблонах.
     # Без этого {{ get_locale() }} в base.html выдаст ошибку "UndefinedError".

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Создать чат — Astroshare{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto px-4 py-10">
+
+    <div class="mb-6">
+        <a href="{{ url_for('groupchat.list_view') }}"
+           class="text-sm font-medium" style="color:#4f8ef7;">← Чаты</a>
+    </div>
+
+    <div class="card rounded-2xl p-8">
+        <h1 class="text-xl font-bold text-white mb-6">Создать групповой чат</h1>
+
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="mb-5">
+                <label class="block text-sm font-medium mb-2" style="color:#9999cc;">Название чата</label>
+                <input type="text" name="name" required maxlength="128"
+                       placeholder="Например: Наблюдатели галактик"
+                       class="w-full rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                       style="background:rgba(255,255,255,0.05);border:1px solid rgba(79,142,247,0.2);">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-2" style="color:#9999cc;">Описание <span style="color:#666699;">(необязательно)</span></label>
+                <input type="text" name="description" maxlength="256"
+                       placeholder="О чём этот чат?"
+                       class="w-full rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                       style="background:rgba(255,255,255,0.05);border:1px solid rgba(79,142,247,0.2);">
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary text-sm px-6 py-2.5 rounded-xl font-semibold">
+                    Создать
+                </button>
+                <a href="{{ url_for('groupchat.list_view') }}"
+                   class="btn-secondary text-sm px-5 py-2.5 rounded-xl font-medium">
+                    Отмена
+                </a>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

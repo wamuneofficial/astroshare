@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Групповые чаты — Astroshare{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-10">
+
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-white">💬 Групповые чаты</h1>
+            <p class="text-sm mt-1" style="color:#9999cc;">Общайтесь с сообществом астрономов</p>
+        </div>
+        <a href="{{ url_for('groupchat.create') }}"
+           class="btn-primary text-sm px-4 py-2 rounded-xl font-semibold">
+            + Создать чат
+        </a>
+    </div>
+
+    <!-- Мои чаты -->
+    {% if my_chats %}
+    <h2 class="text-sm font-semibold mb-3 uppercase tracking-wider" style="color:#666699;">Мои чаты</h2>
+    <div class="space-y-3 mb-8">
+        {% for chat in my_chats %}
+        <a href="{{ url_for('groupchat.view', chat_id=chat.id) }}"
+           class="card rounded-2xl p-5 flex items-center justify-between group block transition-all hover:border-blue-500/30">
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-base font-semibold text-white group-hover:text-blue-300 transition-colors">
+                        {{ chat.name }}
+                    </span>
+                    {% if chat.creator_id == current_user.id %}
+                    <span class="text-xs px-2 py-0.5 rounded-full"
+                          style="background:rgba(240,165,0,0.15);color:#f0a500;">создатель</span>
+                    {% endif %}
+                </div>
+                {% if chat.description %}
+                <p class="text-xs" style="color:#9999cc;">{{ chat.description }}</p>
+                {% endif %}
+                <p class="text-xs mt-1" style="color:#666699;">
+                    {{ chat.members.count() }} участников · создан {{ chat.created_at.strftime('%d.%m.%Y') }}
+                </p>
+            </div>
+            <span class="text-xs font-medium flex-shrink-0" style="color:#4f8ef7;">Открыть →</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Все чаты (вступить) -->
+    {% set other_chats = all_chats | selectattr('id', 'not in', my_chat_ids) | list %}
+    {% if other_chats %}
+    <h2 class="text-sm font-semibold mb-3 uppercase tracking-wider" style="color:#666699;">Другие чаты</h2>
+    <div class="space-y-3">
+        {% for chat in other_chats %}
+        <div class="card rounded-2xl p-5 flex items-center justify-between">
+            <div>
+                <p class="text-base font-semibold text-white mb-1">{{ chat.name }}</p>
+                {% if chat.description %}
+                <p class="text-xs mb-1" style="color:#9999cc;">{{ chat.description }}</p>
+                {% endif %}
+                <p class="text-xs" style="color:#666699;">
+                    {{ chat.members.count() }} участников
+                </p>
+            </div>
+            <form method="POST" action="{{ url_for('groupchat.join', chat_id=chat.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn-secondary text-xs px-4 py-2 rounded-xl">
+                    Вступить
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if not my_chats and not all_chats %}
+    <div class="card rounded-2xl p-14 text-center">
+        <div class="text-5xl mb-4">🌌</div>
+        <p class="text-white mb-2">Чатов ещё нет</p>
+        <p class="text-sm mb-5" style="color:#9999cc;">Создайте первый групповой чат!</p>
+        <a href="{{ url_for('groupchat.create') }}"
+           class="btn-primary text-sm px-5 py-2 rounded-xl font-semibold inline-block">
+            Создать чат
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

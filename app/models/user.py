@@ -38,6 +38,8 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     is_banned = db.Column(db.Boolean, default=False, nullable=False)
     email_confirmed = db.Column(db.Boolean, default=False, nullable=False)
+    # Право редактировать учебные материалы (выдаётся администратором)
+    can_edit_materials = db.Column(db.Boolean, default=False, nullable=False)
 
     # Токены для подтверждения email и сброса пароля.
     # Генерируются случайно, отправляются пользователю, после использования сбрасываются.

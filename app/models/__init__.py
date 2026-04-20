@@ -12,3 +12,5 @@ from .notification import Notification
 from .post import Post
 from .message import Message
 from .friendship import Friendship
+from .material import Material
+from .groupchat import GroupChat, GroupChatMember, GroupChatMessage
