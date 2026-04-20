@@ -46,8 +46,12 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     """Настройки для продакшена (Render.com / Railway.app)."""
     DEBUG = False
-    # В продакшене DATABASE_URL должен быть задан в переменных окружения платформы
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    # Railway/Render возвращают URL начинающийся с postgres://, SQLAlchemy требует postgresql://
+    _db_url = os.environ.get('DATABASE_URL', '')
+    SQLALCHEMY_DATABASE_URI = (
+        _db_url.replace('postgres://', 'postgresql://', 1)
+        if _db_url else None
+    )
 
 
 # Словарь для выбора нужной конфигурации по имени строки
