@@ -15,8 +15,8 @@ instance/
 uploads/*
 !uploads/.gitkeep
 
-# Скомпилированные переводы (генерируются командой pybabel compile)
-*.mo
+# Скомпилированные переводы — нужны на сервере, не игнорируем
+# *.mo
 
 # Python кэш
 __pycache__/

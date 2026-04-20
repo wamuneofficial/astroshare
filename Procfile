@@ -1,1 +1,1 @@
-web: flask db upgrade && gunicorn run:app
+web: pybabel compile -d app/translations && flask db stamp base && flask db upgrade && gunicorn run:app
