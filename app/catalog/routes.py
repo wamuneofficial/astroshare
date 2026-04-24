@@ -1,6 +1,6 @@
 from flask import render_template, request, abort
 from . import catalog
-from .data import CATALOG, CATALOG_BY_ID, OBJECT_TYPES
+from .data import CATALOG, CATALOG_BY_ID, OBJECT_TYPES, SOLAR_SYSTEM_BODIES
 
 # Переводы типов объектов для русского интерфейса
 TYPE_LABELS_RU = {
@@ -73,3 +73,9 @@ def object_detail(object_id):
     if obj is None:
         abort(404)
     return render_template('catalog/object.html', obj=obj)
+
+
+@catalog.route('/solar-system')
+def solar_system():
+    """Интерактивная визуализация Солнечной системы."""
+    return render_template('catalog/solar_system.html', bodies=SOLAR_SYSTEM_BODIES)

@@ -3,10 +3,8 @@
 
 {% block content %}
 <div class="max-w-3xl mx-auto px-4 py-10">
-
     <div class="mb-6">
-        <a href="{{ url_for('materials.list_view') }}"
-           class="text-sm font-medium" style="color:#4f8ef7;">← Все материалы</a>
+        <a href="{{ url_for('materials.list_view') }}" class="text-sm font-medium" style="color:#4f8ef7;">← Все материалы</a>
     </div>
 
     <div class="card rounded-2xl p-8">
@@ -19,28 +17,48 @@
                 <form method="POST" action="{{ url_for('materials.delete', material_id=item.id) }}"
                       onsubmit="return confirm('Удалить материал?')">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit"
-                            class="text-xs px-3 py-1.5 rounded-lg transition-colors"
-                            style="border:1px solid rgba(239,68,68,0.3);color:#fca5a5;">
-                        Удалить
-                    </button>
+                    <button type="submit" class="text-xs px-3 py-1.5 rounded-lg"
+                            style="border:1px solid rgba(239,68,68,0.3);color:#fca5a5;">Удалить</button>
                 </form>
             </div>
             {% endif %}
         </div>
 
-        <div class="flex items-center gap-3 text-xs mb-8 pb-6" style="color:#666699;border-bottom:1px solid rgba(79,142,247,0.12);">
+        <div class="flex items-center gap-3 text-xs mb-6 pb-6"
+             style="color:#666699;border-bottom:1px solid rgba(79,142,247,0.1);">
             <span>Автор: <span style="color:#9999cc;">{{ item.author.username }}</span></span>
             <span>·</span>
             <span>{{ item.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
-            {% if item.updated_at and item.updated_at != item.created_at %}
-            <span>·</span>
-            <span>Обновлено: {{ item.updated_at.strftime('%d.%m.%Y') }}</span>
-            {% endif %}
         </div>
 
-        <div class="text-sm leading-relaxed" style="color:#c8c8e8;white-space:pre-wrap;">{{ item.content }}</div>
-    </div>
+        <!-- Текст -->
+        {% if item.content %}
+        <div class="text-sm leading-relaxed mb-6" style="color:#c8c8e8;white-space:pre-wrap;">{{ item.content }}</div>
+        {% endif %}
 
+        <!-- Прикреплённый файл -->
+        {% if item.file_path %}
+        {% set ext = item.file_original_name.rsplit('.', 1)[1].lower() if '.' in item.file_original_name else '' %}
+        {% set icon = '📄' if ext in ['pdf'] else '📝' if ext in ['doc','docx'] else '📊' if ext in ['xls','xlsx'] else '📑' if ext in ['ppt','pptx'] else '🖼️' if ext in ['png','jpg','jpeg','gif'] else '🗜️' if ext == 'zip' else '📎' %}
+        <div class="rounded-xl p-4 flex items-center gap-4"
+             style="background:rgba(0,200,160,0.06);border:1px solid rgba(0,200,160,0.18);">
+            <span class="text-3xl">{{ icon }}</span>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-white truncate">{{ item.file_original_name }}</p>
+                <p class="text-xs mt-0.5" style="color:#666699;">
+                    {{ ext.upper() }} · {{ "%.1f"|format(item.file_size / 1024) }} КБ
+                </p>
+            </div>
+            <a href="{{ url_for('materials.download_file', material_id=item.id) }}"
+               class="btn-primary text-xs px-4 py-2 rounded-xl font-semibold flex-shrink-0 flex items-center gap-1.5">
+                ⬇ Скачать
+            </a>
+        </div>
+        {% endif %}
+
+        {% if not item.content and not item.file_path %}
+        <p class="text-sm" style="color:#666699;">Содержимое не добавлено.</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
